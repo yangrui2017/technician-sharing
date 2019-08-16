@@ -1,0 +1,128 @@
+{
+	"data": [
+		{
+            "addr_id": "B",
+			"dispatch_id": "1210",
+			"end_time": "1560754764",
+			"money_sum": "26.66",
+			"create_time": "2019-06-18 00:00:00",
+			"appointTitle": "预约：今日",
+			"item_list": [
+				{
+					"item_title": "外清洗",
+					"count": "1"
+				}
+			],
+			"address_count": 1,
+			"order_count": 1,
+			"address_list": [
+				{
+					"address_id": "1361",
+					"address_name": "上海市长宁区番禺路390号",
+					"process_status": "1",
+					"address_longitude": "121.4296600",
+					"address_latitude": "31.2039700",
+					"order_list": [
+						{
+							"service_id": "1592",
+							"order_id": "10815",
+							"service_status": "1",
+							"item_title": "外清洗",
+							"place_type_name": "露天路外固定车位",
+							"car_num": "沪B55553",
+							"place_detail": "",
+							"service_start_time": "2019-06-18 06:00:00",
+							"service_done_time": "2019-06-18 08:00:00",
+							"start_time": "06:00",
+							"end_time": "08:00",
+							"service_date": "2019-06-18"
+							
+						}
+					]
+				}
+			]
+		}, {
+            "addr_id": "A",
+			"dispatch_id": "1210",
+			"end_time": "1560754764",
+			"money_sum": "26.66",
+			"create_time": "2019-06-18 00:00:00",
+			"appointTitle": "预约：今日",
+			"item_list": [
+				{
+					"item_title": "外清洗",
+					"count": "1"
+				}
+			],
+			"address_count": 1,
+			"order_count": 1,
+			"address_list": [
+				{
+					"address_id": "1361",
+					"address_name": "上海市长宁区番禺路390号",
+					"process_status": "1",
+					"address_longitude": "121.4296600",
+					"address_latitude": "31.2039700",
+					"order_list": [
+						{
+							"service_id": "1592",
+							"order_id": "10815",
+							"service_status": "1",
+							"item_title": "外清洗",
+							"place_type_name": "露天路外固定车位",
+							"car_num": "沪B55553",
+							"place_detail": "",
+							"service_start_time": "2019-06-18 12:00:00",
+							"service_done_time": "2019-06-18 14:00:00",
+							"start_time": "12:00",
+							"end_time": "14:00",
+							"service_date": "2019-06-18"
+							
+						}
+					]
+				}
+			]
+		}, {
+            "addr_id": "A",
+			"dispatch_id": "1210",
+			"end_time": "1560754764",
+			"money_sum": "26.66",
+			"create_time": "2019-06-18 00:00:00",
+			"appointTitle": "预约：今日",
+			"item_list": [
+				{
+					"item_title": "外清洗",
+					"count": "1"
+				}
+			],
+			"address_count": 1,
+			"order_count": 1,
+			"address_list": [
+				{
+					"address_id": "1361",
+					"address_name": "上海市长宁区番禺路390号",
+					"process_status": "1",
+					"address_longitude": "121.4296600",
+					"address_latitude": "31.2039700",
+					"order_list": [
+						{
+							"service_id": "1592",
+							"order_id": "10815",
+							"service_status": "1",
+							"item_title": "外清洗",
+							"place_type_name": "露天路外固定车位",
+							"car_num": "沪B55553",
+							"place_detail": "",
+							"service_start_time": "2019-06-18 19:00:00",
+							"service_done_time": "2019-06-18 21:00:00",
+							"start_time": "19:00",
+							"end_time": "21:00",
+							"service_date": "2019-06-18"
+							
+						}
+					]
+				}
+			]
+		}
+	]
+}
