@@ -3,13 +3,13 @@ import Router from 'vue-router'
 Vue.use(Router)
 const router = new Router({
   mode:"history",
-  base:"/",
-  routes: [{
+  base:"/worker/",
+  routes: [
+    {
       path: '/',
       name: 'total-sharing',
       component: () => import('@/views/total-sharing')
     },
-    
     {
       path: '/car-wash',
       name: 'car-wash',

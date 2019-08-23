@@ -42,10 +42,11 @@ export default {
    var key= _that.getQueryString("key");
     _that._data.key=key;
     _that.judge = JSON.parse(sessionStorage.getItem("judge"));//获取菜单并显示
+     var unionid=JSON.parse(localStorage.getItem("userinfo")).unionid;
     _that.$http.post(_that.$api+"/wx/event/user_event/result/", {           
             "event_scene_str":key,
-            "viewer_openid": localStorage.getItem("openid"),
-            "viewer_unionid": localStorage.getItem("unionid")
+            "viewer_openid": localStorage.getItem("openids"),
+            "viewer_unionid":unionid
     })
     .then(function(response) {
       _that._data.originator=response.data.current_user.nickname;    

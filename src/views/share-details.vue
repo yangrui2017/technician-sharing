@@ -19,7 +19,7 @@ export default {
       operable: {
       },
       share:{
-        links:"http://wx.upctech.com.cn/share-page?key=",
+        links:"http://wx.upctech.com.cn/worker/share-page?key=",
         title:"你好我是E帮洗车",
         desc:"关注我们",
         imgUrl:"http://www.upctech.com.cn/static/picture/logo.png"
@@ -36,7 +36,7 @@ export default {
     //获取分享二维码
     _that.$http.post(_that.$api+"/wx/event/user_event/create/", {           
             "event_id":_that._data.operable.id,
-            "openid": localStorage.getItem("openid")
+            "openid": localStorage.getItem("openids")
     })
     .then(function(response) {
          _that._data.points=response.data.event_info.points+"积分";
@@ -49,15 +49,13 @@ export default {
     //获取微信分享sdkconfig
         let formData = new FormData();
       formData.append( "r_url",urls); // 'file' 可变 相当于 input 表单的name 属性
-    _that.$http.post(_that.$api+"/wx/wx_js_sign", formData)
+    _that.$http.post(_that.$api+"/wx/worker/wx_js_sign", formData)
           .then(function(response) {
             if(JSON.stringify(response.data) =="{}"){
               alert("没有获取到jsdk")
             }else{
-              _that._data.data1=JSON.stringify(response.data) ;
+              _that._data.data1=JSON.stringify(response.data);
                   _that.wxInit(response.data);
-          
-          
             }
           })
   },
