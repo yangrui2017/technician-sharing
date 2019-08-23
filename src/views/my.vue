@@ -23,9 +23,7 @@ export default {
    mounted() {
     var _that = this;
     var unionid=JSON.parse(localStorage.getItem("userinfo")).unionid;
-    _that.$http.post(_that.$api+"/wx/event/wx_share/log/", {      
-            "unionid":unionid
-    })
+    _that.$http.get(_that.$api+"/wx/event/wx_share/log/?unionid="+unionid)
     
     .then(function(response) {
       _that._data.sharenumber=response.data.count
