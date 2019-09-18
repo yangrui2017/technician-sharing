@@ -38,6 +38,7 @@ export default {
    mounted() {
     var _that = this;
 
+
     _that._data.headerimg=JSON.parse(localStorage.getItem("userinfo")).headimgurl;
      _that._data.nickname=JSON.parse(localStorage.getItem("userinfo")).nickname;
     var openid=localStorage.getItem("openids");
