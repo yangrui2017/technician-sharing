@@ -11,7 +11,7 @@ export default {
   created() {
 var openid = localStorage.getItem("openids");
 var onoff=true;
-      if (openid == "undefind" || openid == null) {
+      if (openid == " " || openid == null ) {
       var _that = this;
       var urls = window.location.href.split("?").toString();
       var code = _that.getQueryString("code");

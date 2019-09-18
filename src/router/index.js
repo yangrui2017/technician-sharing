@@ -11,35 +11,49 @@ const router = new Router({
       component: () => import('@/views/total-sharing')
     },
     {
-      path: '/car-wash',
-      name: 'car-wash',
-      component: () => import('@/views/car-wash')
+      path: '/activity-list',
+      name: 'activity-list',
+      component: () => import('@/views/activity-list')
     },
     {
-      path: '/company',
-      name: 'company-profile',
-      component: () => import('@/views/company-profile')
+      path: '/tech-content',
+      name: 'tech-content',
+      component: () => import('@/views/tech-content')
     },
-    {
-      path: '/tech-recruitment',
-      name: 'tech-recruitment',
-      component: () => import('@/views/tech-recruitment')
-    },
-   
     {
       path: '/my',
       name: 'my',
       component: () => import('@/views/my')
     },
     {
-      path: '/share-details',
-      name: 'share-details',
-      component: () => import('@/views/share-details')
-    },
-    {
       path: '/share-page',
       name: 'share-page',
       component: () => import('@/views/share-page')
+    },
+    {
+      path: '/qr-code',
+      name: 'qr-code',
+      component: () => import('@/views/qr-code')
+    },
+    {
+      path: '/technicians',
+      name: 'technicians',
+      component: () => import('@/views/technicians')
+    },
+    {
+      path: '/worker-member',
+      name: 'worker-member',
+      component: () => import('@/views/worker-member')
+    },
+    {
+      path: '/worker-worker',
+      name: 'worker-worker',
+      component: () => import('@/views/worker-worker')
+    },
+    {
+      path: '/worker-welcome',
+      name: 'worker-welcome',
+      component: () => import('@/views/worker-welcome')
     }
   ]
 })
@@ -47,6 +61,4 @@ router.afterEach((to, from) => { // 跳转后，不需要 next
 //路由每次走
 
 })
-
-
 export default router

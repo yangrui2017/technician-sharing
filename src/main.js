@@ -12,6 +12,8 @@ import Vant from 'vant';
 import 'vant/lib/index.css';
 import VueAwesomeSwiper from 'vue-awesome-swiper';
 import 'swiper/dist/css/swiper.css';
+import { CouponCell, CouponList } from 'vant';
+Vue.use(CouponCell).use(CouponList);
 Vue.use(VueAwesomeSwiper);
 Vue.use(Vant);
 
