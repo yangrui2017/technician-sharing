@@ -59,6 +59,26 @@ const router = new Router({
       path: '/map',
       name: 'map',
       component: () => import('@/views/map')
+    },
+    {
+      path: '/my-poster',
+      name: 'my-poster',
+      component: () => import('@/views/my-poster')
+    },
+    {
+      path: '/ww-activity',
+      name: 'ww-activity',
+      component: () => import('@/views/ww-activity')
+    },
+    {
+      path: '/wm-activity',
+      name: 'wm-activity',
+      component: () => import('@/views/wm-activity')
+    },
+    {
+      path: '/news-information',
+      name: 'news-information',
+      component: () => import('@/views/news-information')
     }
   ]
 })
