@@ -3,11 +3,11 @@
       <div class="content">
           <div class="header">
             <img class="logo" src="../assets/logo.png"/>
-            <div class="name">节油大师</div>
+            <div class="name">E帮洗车</div>
           </div>
           <div class="text">
             <p>尊敬的{{nickname}}:</p>
-          <span>欢迎您注册节油大师公众号</span>
+          <span>欢迎您注册E帮洗车公众号</span>
           </div>
           <div style="clear:both"></div>
       </div>

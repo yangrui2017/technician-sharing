@@ -2,15 +2,17 @@
 	<div class="box">
 		<header>
 			<img :src="headerimg" class="headerimg" />
-			<div class="header">{{nickname}}邀请你一起免费领取</div>
+			<div class="header">我要找到更多的客户！</div>
 		</header>
 		<div class="container">
             <div class="headerh3">
-             <h3>{{operable.name}}</h3>
-			<div class="text">{{operable.description}}</div>
+            <div class="text">长按海报保存图片，然后转发到朋友圈或微信群中：</div>
             </div>
-           
-            <img :src="imgurl" class="imgurl"/>
+			<van-swipe :autoplay="3000" indicator-color="yellow" :loop=false >
+				<van-swipe-item v-for="(items,index) in imgurl" :key="index"><img :src="items" class="imgurl"/></van-swipe-item>
+			</van-swipe>
+			
+            <!-- <img :src="imgurl" class="imgurl"/> -->
               <div class="person"> 每位好友加盟会员，您可以获得 {{operable.points}} 积分 </div>  
 		</div>    
 			
@@ -23,12 +25,13 @@
 		name: 'HelloWorld',
 		data() {
 			return {
+				openidsa:localStorage.getItem("openids"),
 				operable: "",
 				nickname: "",
 				headerimg: "",
 				activeNames: [],
 				list: [],
-				imgurl: "",
+				imgurl: [],
 				effectivedate:""
 
 			}
@@ -39,7 +42,8 @@
 			setTimeout(function(){
 				_that._data.headerimg = JSON.parse(localStorage.getItem("userinfo")).headimgurl;
 				_that._data.nickname = JSON.parse(localStorage.getItem("userinfo")).nickname;
-                var unionid = JSON.parse(localStorage.getItem("userinfo")).unionid;
+				var unionid = JSON.parse(localStorage.getItem("userinfo")).unionid;
+				
                 formData.append("unionid", unionid); // 'file' 可变 相当于 input 表单的name 属性
                 
 				_that.$http.post(_that.$api + "/wx/event/user_event/list/", formData, {
@@ -56,8 +60,9 @@
                                     "openid": localStorage.getItem("openids")
                                     },{headers: {'Content-Type': 'application/json'}})
                                     .then(function(response) {
-                                        console.log(response)
-                                        _that._data.imgurl=response.data.event_qr.qr_url;
+										var data=response.data.event_qr.qr_url;
+										data=_that.trim(data);
+										 _that._data.imgurl=data.split(",");
                                         _that._data.effectivedate=response.data.event_qr.expire_date;
                                     })
                                     .catch(function(error) {
@@ -75,12 +80,34 @@
 					},800)
 			
 		},
-		methods: {}
+		methods: {
+			trim(url) {
+				url = url.replace(/\]/g,'');
+				url = url.replace(/\[/g,'');
+				url = url.replace(/\'/g,'');
+				return url
+			}
+		}
 	}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 150px;
+    margin: 0;
+  }
+
+  .el-carousel__item:nth-child(2n) {
+     background-color: #99a9bf;
+  }
+  
+  .el-carousel__item:nth-child(2n+1) {
+     background-color: #d3dce6;
+  }
 	.box {
 		width: 100%;
 		height: 100%;
@@ -94,14 +121,14 @@
         overflow: hidden;
 	}
 	
-	.header {
+		.header {
 		float: left;
 		color: #5b4827;
-        font-size: 14px;
+        font-size: 19px;
 		line-height: 200px;
 		text-indent: 2em
 	}
-	
+
 	.headerimg {
 		margin-left: 20px;
 		width: 20%;
@@ -125,7 +152,7 @@
     }
 	h3,.text{
         text-align: center;
-        font-size:30px;
+        font-size:28px;
         line-height: 60px;
         margin:0;
         color: white;

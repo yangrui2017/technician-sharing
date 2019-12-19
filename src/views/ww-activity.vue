@@ -2,15 +2,15 @@
 	<div class="box">
 		<header>
 			<img :src="headerimg" class="headerimg" />
-			<div class="header">{{nickname}}邀请你一起免费领取</div>
+			<div class="header">我要找到更多技师！</div>
 		</header>
 		<div class="container">
             <div class="headerh3">
-             <h3>{{operable.name}}</h3>
-			<div class="text">{{operable.description}}</div>
+		<div class="text">长按海报保存图片，然后转发到朋友圈或微信群中：</div>
             </div>
-           
-            <img :src="imgurl" class="imgurl"/>
+           	<van-swipe :autoplay="3000" indicator-color="white" >
+				<van-swipe-item v-for="(items,index) in imgurl" :key="index"><img :src="items" class="imgurl"/></van-swipe-item>
+			</van-swipe>
               <div class="person"> 每位好友加盟技师，您可以获得 {{operable.points}} 积分 </div>  
 		</div>    
 			
@@ -28,7 +28,7 @@
 				headerimg: "",
 				activeNames: [],
 				list: [],
-				imgurl: "",
+				imgurl: [],
 				effectivedate:""
 
 			}
@@ -56,8 +56,9 @@
                                     "openid": localStorage.getItem("openids")
                                     },{headers: {'Content-Type': 'application/json'}})
                                     .then(function(response) {
-                                        console.log(response)
-                                        _that._data.imgurl=response.data.event_qr.qr_url;
+                                      	var data=response.data.event_qr.qr_url;
+										data=_that.trim(data);
+										 _that._data.imgurl=data.split(",");
                                         _that._data.effectivedate=response.data.event_qr.expire_date;
                                     })
                                     .catch(function(error) {
@@ -75,7 +76,12 @@
 					},800)
 			
 		},
-		methods: {}
+		methods: {trim(url) {
+				url = url.replace(/\]/g,'');
+				url = url.replace(/\[/g,'');
+				url = url.replace(/\'/g,'');
+				return url
+			}}
 	}
 </script>
 
@@ -94,10 +100,10 @@
         overflow: hidden;
 	}
 	
-	.header {
+		.header {
 		float: left;
 		color: #5b4827;
-        font-size: 14px;
+        font-size: 19px;
 		line-height: 200px;
 		text-indent: 2em
 	}
@@ -125,7 +131,7 @@
     }
 	h3,.text{
         text-align: center;
-        font-size:30px;
+        font-size:28px;
         line-height: 60px;
         margin:0;
         color: white;

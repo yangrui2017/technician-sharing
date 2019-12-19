@@ -56,7 +56,6 @@ export default {
             "viewer_unionid": unionid
     })
     .then(function(response) {
-      console.log()
        _that._data.description=response.data.usr_event.description;    
         _that._data.name=response.data.usr_event.name;  
       _that._data.originator=response.data.current_user.nickname;    
