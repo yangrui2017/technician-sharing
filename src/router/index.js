@@ -2,10 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 Vue.use(Router)
 const router = new Router({
-  mode:"history",
-  base:"/worker/",
-  routes: [
-    {
+  mode: 'history',
+  base: '/worker/',
+  routes: [{
       path: '/',
       name: 'total-sharing',
       component: () => import('@/views/total-sharing'),
@@ -78,9 +77,9 @@ const router = new Router({
       }
     },
     {
-      path: '/agency-rules',
-      name: 'agency-rules',
-      component: () => import('@/views/agency-rules'),
+      path: '/agent-rules',
+      name: 'agent-rules',
+      component: () => import('@/views/agent-rules'),
       meta: {
         title: '代理规则'
       }
@@ -92,14 +91,46 @@ const router = new Router({
       meta: {
         title: '申请代理'
       }
+    },
+    {
+      path: '/agent-poster',
+      name: 'agent-poster',
+      component: () => import('@/views/agent-poster'),
+      meta: {
+        title: '代理海报'
+      }
+    },
+    {
+      path: '/agent-reward',
+      name: 'agent-reward',
+      component: () => import('@/views/agent-reward'),
+      meta: {
+        title: '代理奖金'
+      }
+    },
+    {
+      path: '/push-message1',
+      name: 'push-message1',
+      component: () => import('@/views/push-message1'),
+      meta: {
+        title: '推送消息'
+      }
+    },
+    {
+      path: '/push-message2',
+      name: 'push-message2',
+      component: () => import('@/views/push-message2'),
+      meta: {
+        title: '推送消息'
+      }
     }
   ]
 })
 router.beforeEach((to, from, next) => {
   /* 路由发生变化修改页面title */
   if (to.meta.title) {
-    document.title = to.meta.title;
+    document.title = to.meta.title
   }
-  next();
+  next()
 })
 export default router
