@@ -85,7 +85,7 @@ export default {
       _that.$http.post(_that.$api + '/wx/event/user_event/ww/', {
         'unionid': unionid
       }, {
-        headers: { 'Content-Type': '0/json' }
+        headers: { 'Content-Type': 'application/json' }
       })
         .then(function (response) {
           console.log(response.data)
