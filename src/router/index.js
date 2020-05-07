@@ -31,7 +31,7 @@ const router = new Router({
     {
       path: '/technicians',
       name: 'technicians',
-      component: () => import('@/views/technicians'),
+      component: resolve => require(['@/views/technicians'], resolve),
       meta: {
         title: '招募技师'
       }
