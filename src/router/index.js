@@ -4,14 +4,7 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   base: '/worker/',
-  routes: [{
-      path: '/',
-      name: 'total-sharing',
-      component: () => import('@/views/total-sharing'),
-      meta: {
-        title: '个人中心'
-      }
-    },
+  routes: [
     {
       path: '/my',
       name: 'my',
@@ -36,14 +29,7 @@ const router = new Router({
         title: '招募技师'
       }
     },
-    {
-      path: '/worker-welcome',
-      name: 'worker-welcome',
-      component: () => import('@/views/worker-welcome'),
-      meta: {
-        title: '新用户'
-      }
-    },
+
     {
       path: '/map',
       name: 'map',
@@ -68,14 +54,7 @@ const router = new Router({
         title: '我的推广'
       }
     },
-    {
-      path: '/news-information',
-      name: 'news-information',
-      component: () => import('@/views/news-information'),
-      meta: {
-        title: '新闻文章'
-      }
-    },
+
     {
       path: '/agent-rules',
       name: 'agent-rules',

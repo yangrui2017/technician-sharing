@@ -1,40 +1,36 @@
 <template>
   <div class="box">
-    <header>
-      <div class="usertext">
-        <img :src="headerimg"
-             class="headerimg" />
-        <div class="header">{{nickname}}</div>
-      </div>
-      <div class="userpoints">当前积分：{{points}}</div>
-    </header>
+    <h3>代理奖金</h3>
+    <p class="allpoints">当前所得佣金{{points}}</p>
+    <van-cell-group>
+      <van-cell v-for="(item,index) in list"
+                :key=index
+                :title="item.created_on"
+                :value="item.commision"
+                :label="item.member_uid" />
+    </van-cell-group>
 
-    <div class="list"
-         v-for="(item,index) in list"
-         :key="index">
-      <div class="listbox">
-        <p>分享给{{item.viewer_name}}</p>
-        <p>{{item.modified_on}}</p>
-      </div>
-      <div class="listbox fonts">获得{{item.usr_points}}积分</div>
-    </div>
+    <agenttitle />
     <div class="footer">----------------显示所有记录----------------</div>
-
   </div>
 </template>
 
 <script>
-
+import { Cell, CellGroup } from 'vant'
+import agenttitle from '../components/agent-title'
 export default {
-  name: 'HelloWorld',
   data () {
     return {
-      nickname: '',
-      headerimg: '',
-      sharenumber: '20',
-      list: [],
-      points: ''
+      points: '',
+      list: [
+        {          'creattime': '2018-01-02',
+          'points': '50'
+        },
+        {          'creattime': '2018-01-02',
+          'points': '50'
+        }
 
+      ]
     }
   },
   created () {
@@ -77,23 +73,15 @@ export default {
   },
   mounted () {
     var _that = this
-
-    _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).headimgurl
-    _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).nick
-    var openid = localStorage.getItem('openids')
-    _that.$http.get(_that.$api + '/wx/event/user_event/result_by_openid/?openid=' + openid)
-      .then(function (response) {
-        _that._data.list = response.data.user_event_result
+    var unionid = JSON.parse(localStorage.getItem('userinfo')).unionid
+    _that.$http
+      .post(_that.$api + '/wx/agent/get_his', { 'unionid': unionid })
+      .then(rs => {
+        _that._data.points = rs.data.comm.amount
+        _that._data.list = rs.data.comm_his
       })
-      .catch(function (error) {
-        console.log(error)
-      })
-    _that.$http.get(_that.$api + '/wx/event/user_event/global_point/?openid=' + openid)
-      .then(function (response) {
-        _that._data.points = response.data.points
-      })
-      .catch(function (error) {
-        console.log(error)
+      .catch(err => {
+        console.log(err)
       })
   },
   methods: {
@@ -103,6 +91,11 @@ export default {
       if (r != null) return unescape(r[2])
       return null
     }
+  },
+  components: {
+    'agenttitle': agenttitle,
+    'van-cell': Cell,
+    'van-cell-group': CellGroup
   }
 }
 </script>
@@ -112,53 +105,16 @@ export default {
 .box {
   width: 100%;
   height: 100%;
+  background: #ffa200;
 }
-header {
-  width: 100%;
-  background: #25034d;
-  height: 150px;
-}
-
-.header {
-  float: left;
+h3 {
+  height: 50px;
+  margin: 0;
+  line-height: 50px;
   color: white;
-  line-height: 150px;
-  text-indent: 2em;
+  background: #f34230;
 }
 
-.headerimg {
-  margin-left: 20px;
-  width: 20%;
-  float: left;
-  margin-top: 40px;
-  border-radius: 50%;
-}
-.list {
-  width: 100%;
-  height: 60px;
-  overflow: initial;
-}
-.listbox {
-  width: 50%;
-  float: left;
-  height: 100%;
-  font-size: 15px;
-  line-height: 30px;
-  color: black;
-}
-.listbox p {
-  margin: 0;
-}
-.fonts {
-  font-size: 20px;
-  font-weight: bold;
-  color: red;
-  line-height: 60px;
-}
-.el-divider {
-  float: left;
-  margin: 0;
-}
 .footer {
   margin-top: 20px;
   font-size: 12px;
@@ -166,15 +122,16 @@ header {
   line-height: 30px;
   text-align: center;
 }
-.usertext {
-  height: 80%;
-  overflow: hidden;
-}
-.userpoints {
-  height: 20%;
-  text-align: left;
+.van-cell-group,
+.van-cell {
+  background-color: transparent;
   color: white;
-  line-height: 30px;
-  margin-left: 20px;
+}
+.van-cell__label,
+.van-cell__value {
+  color: white;
+}
+.allpoints {
+  color: white;
 }
 </style>

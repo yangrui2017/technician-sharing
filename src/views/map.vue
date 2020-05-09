@@ -8,7 +8,6 @@
 </template>
 
 <script>
-// import mapdetail from "@/assets/map"
 
 export default {
   name: 'maps',

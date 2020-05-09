@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { Swipe, SwipeItem } from 'vant'
 export default {
   name: 'HelloWorld',
   data () {
@@ -39,6 +40,10 @@ export default {
       effectivedate: ''
 
     }
+  },
+  components: {
+    'van-swipe': Swipe,
+    'van-swipe-item': SwipeItem
   },
   created () {
     var openid = localStorage.getItem('openids')

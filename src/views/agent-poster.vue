@@ -29,7 +29,7 @@
 </template>
 
 <script>
-
+import { Swipe, SwipeItem } from 'vant'
 import agenttitle from '../components/agent-title'
 export default {
   name: 'HelloWorld',
@@ -123,7 +123,9 @@ export default {
     }
   },
   components: {
-    'agenttitle': agenttitle
+    'agenttitle': agenttitle,
+    'van-swipe': Swipe,
+    'van-swipe-item': SwipeItem
 
   }
 }

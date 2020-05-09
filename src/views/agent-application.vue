@@ -127,10 +127,13 @@
 </template>
 
 <script>
+import { Button, Tab, Tabs, Cell, CellGroup, Field, Col, Row } from 'vant'
 import { setTimeout } from 'timers'
 import agenttitle from '../components/agent-title'
 import md5 from 'js-md5'
+
 export default {
+
   data () {
     return {
       img1: false,
@@ -164,6 +167,7 @@ export default {
 
     }
   },
+
   created () {
   },
   mounted () {
@@ -293,7 +297,15 @@ export default {
     }
   },
   components: {
-    'agenttitle': agenttitle
+    'agenttitle': agenttitle,
+    'van-button': Button,
+    'van-tab': Tab,
+    'van-tabs': Tabs,
+    'van-cell': Cell,
+    'van-cell-group': CellGroup,
+    'van-field': Field,
+    'van-col': Col,
+    'van-row': Row
 
   }
 }
