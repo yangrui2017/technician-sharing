@@ -1,30 +1,26 @@
 <template>
   <div class="box">
-    <h3>代理海报</h3>
-
+    <header>
+      <img :src="headerimg"
+           class="headerimg" />
+      <div class="header">我要找到更多的客户！</div>
+    </header>
     <div class="container">
-      <header>
-        <img :src="headerimg"
-             class="headerimg" />
-        <div class="headers">我要找到更多的客户！</div>
-      </header>
-      <div class="person">
-        <h4>分享步骤</h4>
-        <p>1，风向的狂扫肯定撒面对空门独立声卡减肥法</p>
-        <p>1，风向的狂扫肯定撒面对空门独立声卡减肥法</p>
+      <div class="headerh3">
+        <div class="text">长按海报保存图片，然后转发到朋友圈或微信群中：</div>
       </div>
-      <div class="personimg">
-        <van-swipe :autoplay="3000"
-                   indicator-color="yellow"
-                   :loop=false>
-          <van-swipe-item v-for="(items,index) in imgurl"
-                          :key="index"><img :src="items"
-                 class="imgurl" /></van-swipe-item>
-        </van-swipe>
-      </div>
+      <van-swipe :autoplay="3000"
+                 indicator-color="yellow"
+                 :loop=false>
+        <van-swipe-item v-for="(items,index) in imgurl"
+                        :key="index"><img :src="items"
+               class="imgurl" /></van-swipe-item>
+      </van-swipe>
 
+      <!-- <img :src="imgurl" class="imgurl"/> -->
+      <div class="person"> 每位好友加盟会员，您可以获得 {{operable.points}} 积分 </div>
     </div>
-    <agenttitle />
+
   </div>
 </template>
 
@@ -41,56 +37,20 @@ export default {
       headerimg: '',
       activeNames: [],
       list: [],
-      imgurl: ['https://s3.cn-northwest-1.amazonaws.com.cn/wechat-qr/MM-0W1rXFg9DP447319f4-0a8f-11ea-8010-0ac8cbd8795a_qr.jpg',
-        'https://s3.cn-northwest-1.amazonaws.com.cn/wechat-qr/MM-0W1rXFg9DP57f13470-0a8f-11ea-8010-0ac8cbd8795a_qr.jpg'],
+      imgurl: [],
       effectivedate: ''
 
     }
   },
   created () {
-    var openid = localStorage.getItem('openids')
-    var onoff = true
-    if (openid == 'undefined' || openid == null) {
-      var _that = this
-      var urls = window.location.href.split('?').toString()
-      var code = _that.getQueryString('code')
-      if (code !== '' && code !== null && code !== undefined) {
-        _that.$http
-          .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
-          .then(function (response) {
-            localStorage.setItem('openids', response.data.openid)
-            localStorage.setItem('userinfo', JSON.stringify(response.data))
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-      } else {
-        //					获取code
-        let formDatas = new FormData()
-        formDatas.append('r_url', urls)
-        _that.$http.post(_that.$api + '/wx/worker/wx_js_sign', formDatas)
 
-          .then(function (response) {
-            urls = encodeURIComponent(urls)
-            let link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' +
-              response.data.appId +
-              '&redirect_uri=' +
-              urls +
-              '&response_type=code&scope=snsapi_userinfo&state=STATE&connect_redirect=1#wechat_redirect'
-            window.location.replace(link)
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-      }
-    }
   },
   mounted () {
     var _that = this
     setTimeout(function () {
-      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).headimgurl
-      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).nick
-      var unionid = JSON.parse(localStorage.getItem('userinfo')).unionid
+      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
+      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
+      var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
       _that.$http.post(_that.$api + '/wx/event/user_event/by_usertype/', {
         'unionid': unionid,
         'user_type': 'agent'
@@ -101,7 +61,6 @@ export default {
           var data = response.data.qr_url
           data = _that.trim(data)
           _that._data.imgurl = data.split(',')
-          _that._data.effectivedate = response.data.expire_date
         })
         .catch(function (error) {
           console.log(error)
@@ -136,36 +95,21 @@ export default {
 .box {
   width: 100%;
   height: 100%;
-  background: #ffa200;
+  background: #ffd800;
+  overflow: scroll;
 }
-h3 {
-  height: 50px;
-  margin: 0;
-  line-height: 50px;
-  color: white;
-  background: #f34230;
-}
-.container {
-  width: 90%;
-  margin-left: 5%;
-  margin-top: 30px;
-  background: white;
-  border-radius: 10px;
-}
+
 header {
   width: 100%;
   height: 150px;
   overflow: hidden;
-  background: #f34230;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
 }
 
-.headers {
+.header {
   float: left;
-  color: white;
-  font-size: 20px;
-  line-height: 100px;
+  color: #5b4827;
+  font-size: 19px;
+  line-height: 200px;
   text-indent: 2em;
 }
 
@@ -176,18 +120,53 @@ header {
   margin-top: 40px;
   border-radius: 50%;
 }
-.person {
-  margin-top: 20px;
-  border-bottom: 1px dashed #f34230;
+
+.container {
+  text-align: left;
+  width: 90%;
+  background: white;
+  margin-left: 5%;
+  border-radius: 20px;
+  margin-bottom: 20px;
 }
-.person p {
-  font-size: 13px;
-  color: #7d7e80;
+.headerh3 {
+  background: #fe3a3b;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+}
+h3,
+.text {
+  text-align: center;
+  font-size: 28px;
+  line-height: 60px;
+  margin: 0;
+  color: white;
+}
+.text {
+  line-height: 40px;
+  font-size: 18px;
+  width: 80%;
+  margin-left: 10%;
+}
+.van-cell-group__title {
+  margin-top: 2vh;
+  /* padding: 5px 5px 5px; */
+  font-weight: bold;
+  color: darkblue;
+  text-align: left;
+  background-color: whitesmoke;
+  /* box-shadow: 5px 6px 8px 0px rgba(56, 56, 56, 0.21); */
 }
 .imgurl {
-  width: 50%;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
-.personimg {
-  padding: 20px 0;
+.person {
+  line-height: 35px;
+  text-align: center;
+  width: 90%;
+  margin-left: 5%;
+  border-top: 1px dashed #fed800;
 }
 </style>

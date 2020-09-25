@@ -1,14 +1,27 @@
 <template>
   <div class="boxs">
+    <div class="promptbox">
+      <div class="promptlist">
+        <div class="promptcolor color1"></div>
+        <div class="prompttext">已开通</div>
+      </div>
+      <div class="promptlist">
+        <div class="promptcolor color2"></div>
+        <div class="prompttext">待开通</div>
+      </div>
+      <div class="promptlist">
+        <div class="promptcolor color3"></div>
+        <div class="prompttext">区域满额<span>(此区域技师已满员)</span></div>
+      </div>
 
+    </div>
     <div id="map"
-         class="map"
-         :style="{height:heights}"></div>
+         class="map"></div>
   </div>
 </template>
 
 <script>
-
+import redflag from '../assets/redflag.png'
 export default {
   name: 'maps',
   data () {
@@ -32,28 +45,147 @@ export default {
       userlocation: { lng: '', lat: '' }
     }
   },
+  created () {
+    var openid = localStorage.getItem('openids')
+    var onoff = true
+    if (openid == 'undefined' || openid == null || onoff) {
+      var _that = this
+      var urls = window.location.href.split('?').toString()
+      var code = _that.getQueryString('code')
+      if (code !== '' && code !== null && code !== undefined) {
+        _that.$http
+          .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
+          .then(function (response) {
+            localStorage.setItem('openids', response.data.openid)
+            localStorage.setItem('userinfo', JSON.stringify(response.data))
+            _that.$http.post('https://xcx.upctech.com.cn/api/register/getAddressByUnionid', {
+              'access_key': 'xunjiepf',
+              'unionid': response.data.userData.unionid
+            }).then(res => {
+              var points = _that.qqMapTransBMap(res.data.address_latitude, res.data.address_longitude)
+
+              _that.Zmap(points.lat, points.lng)
+            })
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      } else {
+        //					获取code
+        let formDatas = new FormData()
+        formDatas.append('r_url', urls)
+        _that.$http.post(_that.$api + '/wx/worker/wx_js_sign', formDatas)
+
+          .then(function (response) {
+            urls = encodeURIComponent(urls)
+            let link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' +
+              response.data.appId +
+              '&redirect_uri=' +
+              urls +
+              '&response_type=code&scope=snsapi_userinfo&state=STATE&connect_redirect=1#wechat_redirect'
+            window.location.replace(link)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
+    }
+  },
   mounted () {
     var _that = this
     this.$http.get('https://wx.upctech.com.cn/api/map/map_data').then(res => {
       this.mapdetail = res.data
       console.log('shujv', this.mapdetail)
-      this.Zmap()
     })
   },
   methods: {
-    ceshi () {
-      this.flag = false
+    // 微信sdk
+    wxInit (res) {
+      var _that = this
+      wx.config({
+        debug: false,
+        appId: res.appId,
+        timestamp: res.timestamp,
+        nonceStr: res.noncestr,
+        signature: res.signature,
+        jsApiList: ['getLocation']
+      })
+      wx.checkJsApi({
+        jsApiList: ['getLocation'],
+        success: function (res) {
+          if (res.checkResult.getLocation == false) {
+            alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！')
+          }
+        }
+      })
+
+      // 微信分享失败
+      wx.error(function (err) {
+        alert(JSON.stringify(err))
+      })
+      // 微信分享成功
+      wx.ready(function () {
+        alert('fenxiangchenggong ')
+        wx.getLocation({
+          success: function (res) {
+            var points = _that.qqMapTransBMap(res.latitude, res.longitude)
+
+            _that.Zmap(points.lat, points.lng)
+            // var points2 = _that.qqMapTransBMap2(res.latitude, res.longitude)
+            // console.log(pointss)
+          },
+          cancel: function (res) {
+            alert('用户拒绝授权获取地理位置')
+          }
+        })
+      })
     },
-    Zmap () {
+
+    qqMapTransBMap2 (lat, lng) {
+      var _that = this
+      _that.$http.get('https://api.map.baidu.com/reverse_geocoding/v2/?ak=7hhI8dTWwLRQ8KLTWqi8kOoLUhClNDxS&output=json&coordtype=wgs84ll&location=' + lat + ',' + lng)
+        .then(function (response) {
+          console.log(response)
+        })
+    },
+    qqMapTransBMap (lat, lng) {
+      let x_pi = 3.14159265358979324 * 3000.0 / 180.0
+
+      let x = lng
+
+      let y = lat
+
+      let z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi)
+
+      let theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi)
+
+      let lngs = z * Math.cos(theta) + 0.0065
+
+      let lats = z * Math.sin(theta) + 0.006
+
+      return {
+
+        lng: lngs,
+
+        lat: lats
+      }
+    },
+    getQueryString (name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
+      var r = window.location.search.substr(1).match(reg)
+      if (r != null) return unescape(r[2])
+      return null
+    },
+    Zmap (lat, lng) {
       var onoff2 = true
       let zmap = this
       var zMap = this
       this.map = new BMap.Map('map') // 创建地图实例
-      // console.log('....',this.map)
-      var point = new BMap.Point(121.481976, 31.226871) // 创建点坐标
-      this.map.centerAndZoom(point, 13) // 初始化地图，设置中心点坐标和地图级别
-
-      var marker = new BMap.Marker(new BMap.Point(121.481976, 31.226871)) // 创建标注
+      var point = new BMap.Point(lng, lat) // 创建点坐标
+      this.map.centerAndZoom(point, 12) // 初始化地图，设置中心点坐标和地图级别
+      var myIcon = new BMap.Icon(redflag, new BMap.Size(25, 25))
+      var marker = new BMap.Marker(new BMap.Point(lng, lat), { icon: myIcon })
+      // var marker = new BMap.Marker() // 创建标注
       this.map.addOverlay(marker)
       this.map.enableScrollWheelZoom(true)
 
@@ -134,7 +266,7 @@ export default {
             new BMap.Point(i.toFixed(6), zMap.bounds.y1),
             new BMap.Point(i.toFixed(6), zMap.bounds.y2)
           ],
-          { strokeColor: 'black', strokeWeight: 1, strokeOpacity: 0.5 }
+          { strokeColor: 'black', strokeWeight: 1, strokeOpacity: 0.8, strokeStyle: 'dashed' }
         )
         zMap.xgrids.push(polyline)
         zMap.map.addOverlay(polyline)
@@ -152,7 +284,7 @@ export default {
             new BMap.Point(zMap.bounds.x1, i.toFixed(6)),
             new BMap.Point(zMap.bounds.x2, i.toFixed(6))
           ],
-          { strokeColor: 'black', strokeWeight: 1, strokeOpacity: 0.5 }
+          { strokeColor: 'black', strokeWeight: 1, strokeOpacity: 0.8, strokeStyle: 'dashed' }
         )
         zMap.ygrids.push(polyline)
         zMap.map.addOverlay(polyline)
@@ -254,7 +386,7 @@ export default {
             strokeWeight: 2,
             strokeOpacity: 0.5
           })
-          polygon.setFillColor('green')
+          polygon.setFillColor('#e3f2e3')
 
           zMap.map.addOverlay(polygon)
           zMap.beSelectBounds[key] = polygon
@@ -285,7 +417,7 @@ export default {
             strokeWeight: 2,
             strokeOpacity: 0.5
           })
-          polygon.setFillColor('blue')
+          polygon.setFillColor('#e0e0ec')
 
           zMap.map.addOverlay(polygon)
           zMap.beSelectBounds[key] = polygon
@@ -303,6 +435,46 @@ export default {
 .boxs {
   height: 100%;
 }
+.promptbox {
+  width: 60%;
+  height: 100px;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+}
+.promptlist {
+  width: 100%;
+  height: 25px;
+}
+.promptcolor {
+  float: left;
+  margin-top: 4px;
+  width: 10%;
+  height: 14px;
+  border-radius: 25%;
+}
+.color1 {
+  background: #e3f2e3;
+}
+.color2 {
+  background: #e0e0ec;
+}
+.color3 {
+  background: #f1c3c3;
+}
+.color4 {
+  background: #ecca35;
+}
+.prompttext {
+  font-weight: 600;
+  width: 90%;
+  text-align: left;
+  line-height: 25px;
+  font-size: 14px;
+  float: left;
+}
+
 .map {
   width: 100%;
   height: 750px;
@@ -321,5 +493,8 @@ export default {
   right: 0;
   z-index: 10;
   background: white;
+}
+.prompttext span {
+  font-size: 12px;
 }
 </style>

@@ -8,14 +8,16 @@ import axios from 'axios'
 //   CouponCell,
 //   CouponList
 // }
-
+import 'vant/lib/icon/local.css';
+import VueJsonp from 'vue-jsonp'
 // import Vant from 'vant'
 
 // import 'vant/lib/index.css'
 // import VueAwesomeSwiper from 'vue-awesome-swiper'
 // import 'swiper/dist/css/swiper.css'
-
 import api from './api/index.js'
+Vue.use(VueJsonp)
+
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true
 Vue.prototype.$http = axios
