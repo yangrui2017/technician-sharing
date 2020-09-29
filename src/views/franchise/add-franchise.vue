@@ -4141,6 +4141,7 @@ export default {
       return null
     },
     register () {
+
       var _that = this;
       if (_that._data.companycity == '') {
         Toast('请选择服务区域')
@@ -4148,6 +4149,8 @@ export default {
         Toast('请选择现住址')
       } else {
         _that.addresstranslation(_that._data.company.address);
+
+
         _that._data.company.partner_unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
 
       }
@@ -4155,7 +4158,7 @@ export default {
     addresstranslation (res) {
       var _that = this
       const KEY = '7hhI8dTWwLRQ8KLTWqi8kOoLUhClNDxS' // key 秘钥自己申请
-      let url = 'http://api.map.baidu.com/geocoder/v2/'
+      let url = ' http://api.map.baidu.com/geocoding/v3/'
       _that.$jsonp(url, {
         ak: KEY,
         address: res,

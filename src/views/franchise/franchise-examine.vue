@@ -38,9 +38,8 @@ export default {
         _that.$http
           .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
           .then(function (response) {
-            _that._data.text1 = response.data
             localStorage.setItem('userinfo', JSON.stringify(response.data))
-            var arr = response.data.wk_role;
+            var arr = response.data.mpuser.wk_role;
             if (arr == null) {
               _that.run()
             } else {
