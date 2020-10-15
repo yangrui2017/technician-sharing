@@ -3,7 +3,7 @@
     <header>
       <img :src="headerimg"
            class="headerimg" />
-      <div class="header">我要找到更多的客户！</div>
+      <div class="header">我要找到更多的技师！</div>
     </header>
     <div class="container">
       <div class="headerh3">

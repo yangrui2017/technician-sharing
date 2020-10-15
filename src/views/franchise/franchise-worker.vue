@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <van-nav-bar title="技师详情表"
+    <van-nav-bar title="本月技师洗车详情"
                  left-text="返回"
                  left-arrow
                  @click-left="onClickLeft">
@@ -8,16 +8,16 @@
     <div class="listdivs">
       <van-cell title="某某技师"
                 is-link
-                value="详情" />
+                value="110单" />
       <van-cell title="某某技师"
                 is-link
-                value="详情" />
+                value="110单" />
       <van-cell title="某某技师"
                 is-link
-                value="详情" />
+                value="110单" />
       <van-cell title="某某技师"
                 is-link
-                value="详情" />
+                value="110单" />
 
     </div>
   </div>

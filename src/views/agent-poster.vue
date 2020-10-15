@@ -48,9 +48,9 @@ export default {
   mounted () {
     var _that = this
     setTimeout(function () {
-      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
-      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
-      var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
+      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
+      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).muser.nick
+      var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
       _that.$http.post(_that.$api + '/wx/event/user_event/by_usertype/', {
         'unionid': unionid,
         'user_type': 'agent'

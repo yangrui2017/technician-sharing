@@ -46,9 +46,9 @@ export default {
     }
   },
   created () {
-    var openid = localStorage.getItem('openids')
+     var userinfo = JSON.parse(localStorage.getItem('userinfo'))
     var onoff = true
-    if (openid == 'undefined' || openid == null || onoff) {
+    if (userinfo == 'undefined' || userinfo == null || onoff) {
       var _that = this
       var urls = window.location.href.split('?').toString()
       var code = _that.getQueryString('code')
@@ -56,11 +56,11 @@ export default {
         _that.$http
           .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
           .then(function (response) {
-            localStorage.setItem('openids', response.data.openid)
+            // localStorage.setItem('openids', response.data.openid)
             localStorage.setItem('userinfo', JSON.stringify(response.data))
             _that.$http.post('https://xcx.upctech.com.cn/api/register/getAddressByUnionid', {
               'access_key': 'xunjiepf',
-              'unionid': response.data.userData.unionid
+              'unionid': response.data.muser.unionid
             }).then(res => {
               var points = _that.qqMapTransBMap(res.data.address_latitude, res.data.address_longitude)
 

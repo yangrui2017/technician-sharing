@@ -41,9 +41,9 @@ export default {
     run () {
       var _that = this
       var urls = window.location.href.split('?')[0]
-      var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
-      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
-      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
+      var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
+      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
+      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).muser.nick
 
       _that.$http
         .get(_that.$api + '/wx/agent/get_by_unionid?unionid=' + unionid)

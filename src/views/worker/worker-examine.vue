@@ -30,7 +30,7 @@ export default {
     var _that = this
     var userinfo = localStorage.getItem('userinfo')
     var store_id = _that.getQueryString('store_id')
-    console.log(store_id) 
+    console.log(store_id)
     var onoff = true
     if (userinfo == 'undefined' || userinfo == null || onoff) {
       var urls = window.location.href.split('?').toString()
@@ -79,32 +79,32 @@ export default {
       var _that = this
       var urls = window.location.href.split('?')[0]
 
-      var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
-      var user_headimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
-      var nick_name = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
+      var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
+      var user_headimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
+      var nick_name = JSON.parse(localStorage.getItem('userinfo')).muser.nick
 
-      // _that.$http
-      //   .get(url + '/api/register/checkWorker?access_key=xunjiepf&unionid=' + unionid + '&user_headimg=' + user_headimg + '+&nick_name=' + nick_name)
-      //   .then(rs => {
-      //     if (rs.data.code == '1') {
-      //       sessionStorage.setItem('uid', rs.data.uid)
-      //       _that.$router.push({
-      //         path: '/worker-agreement'
-      //       })
-      //     } else if (rs.data.code == '2') {
-      //       _that._data.language = '提交成功，资料正在审核中...'
-      //     } else if (rs.data.code == '3') {
-      //       _that._data.language = '您已经是技师了'
-      //     } else if (rs.data.code == '4') {
-      //       sessionStorage.setItem('uid', rs.data.data.uid)
-      //       _that.$router.push({
-      //         path: '/worker-agreement'
-      //       })
-      //     }
-      //   })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
+      _that.$http
+        .get(url + '/api/register/checkWorker?access_key=xunjiepf&unionid=' + unionid + '&user_headimg=' + user_headimg + '+&nick_name=' + nick_name)
+        .then(rs => {
+          if (rs.data.code == '1') {
+            sessionStorage.setItem('uid', rs.data.uid)
+            _that.$router.push({
+              path: '/worker-agreement'
+            })
+          } else if (rs.data.code == '2') {
+            _that._data.language = '提交成功，资料正在审核中...'
+          } else if (rs.data.code == '3') {
+            _that._data.language = '您已经是技师了'
+          } else if (rs.data.code == '4') {
+            sessionStorage.setItem('uid', rs.data.data.uid)
+            _that.$router.push({
+              path: '/worker-agreement'
+            })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   components: {

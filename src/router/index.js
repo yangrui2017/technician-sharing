@@ -12,7 +12,15 @@ const router = new Router({
         title: '个人中心'
       }
     },
-
+    {
+      path: '/agent-account',
+      name: 'agent-account',
+      component: () => import('@/views/agent-account'),
+      meta: {
+        title: '代理账户'
+      }
+    },
+    
     {
       path: '/technicians',
       name: 'technicians',
@@ -209,15 +217,7 @@ const router = new Router({
         title: '加盟店列表'
       }
     },
-    
-    {
-      path: '/franchise-adopt',
-      name: 'franchise-adopt',
-      component: () => import('@/views/franchise/franchise-adopt'),
-      meta: {
-        title: '加盟店技师审核'
-      }
-    },
+
     {
       path: '/franchise-partner',
       name: 'franchise-partner',

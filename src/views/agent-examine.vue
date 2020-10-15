@@ -37,7 +37,7 @@ export default {
           .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
           .then(function (response) {
             localStorage.setItem('userinfo', JSON.stringify(response.data))
-            if (response.data.xcx_uid == null) {
+            if (response.data.muser.xcx_uid == null) {
               _that.run()
             } else {
               _that._data.language = '您已经是技师了，无需注册代理！'
@@ -79,9 +79,9 @@ export default {
     run () {
       var _that = this
       var urls = window.location.href.split('?')[0]
-      var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
-      var user_headimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
-      var nick_name = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
+      var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
+      var user_headimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
+      var nick_name = JSON.parse(localStorage.getItem('userinfo')).muser.nick
 
       _that.$http
         .get(_that.$api + '/wx/agent/get_by_unionid?unionid=' + unionid)

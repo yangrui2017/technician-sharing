@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <van-nav-bar title="资金明细"
+    <van-nav-bar title="账单明细"
                  left-text="返回"
                  left-arrow
                  @click-left="onClickLeft">
@@ -29,13 +29,13 @@
         </div>
 
         <div class="listtext">
-          <div class="listtextleft detailed">服务佣金</div>
-          <div class="listtextright detailed">+122￥</div>
+          <div class="listtextleft detailed">订单总数</div>
+          <div class="listtextright detailed">122</div>
         </div>
 
         <div class="listtext">
-          <div class="listtextleft detailed">招募技师</div>
-          <div class="listtextright detailed">+122￥</div>
+          <div class="listtextleft detailed">订单总额</div>
+          <div class="listtextright detailed">30021￥</div>
         </div>
       </div>
       <div class="listdiv">

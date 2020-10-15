@@ -5,30 +5,24 @@
                  left-arrow
                  @click-left="onClickLeft">
     </van-nav-bar>
-    <van-steps direction="vertical"
-               :active="0">
-      <van-step>
-        <h3>管理技师</h3>
-      </van-step>
-      <van-step>
-        <h3>管理技师</h3>
-      </van-step>
-      <van-step>
-        <h3>管理技师</h3>
-      </van-step>
-    </van-steps>
-
+    <div class="problemlist">
+      <div class="problem">1.加盟店技师在哪里查看订单明细?</div>
+      <div class="answer">在技师公众号菜单栏下的技师中心可查看技师订单详情</div>
+    </div>
+    <div class="problemlist">
+      <div class="problem">2.如何切换门店?</div>
+      <div class="answer">在个人中心顶部右侧点击设置图标切换门店</div>
+    </div>
   </div>
 </template>
 
 <script>
-import { NavBar, Icon, Step, Steps } from 'vant'
+import { NavBar, Icon } from 'vant'
 export default {
   name: 'HelloWorld',
   data () {
     return {
       active: 4,
-
     }
   },
   mounted () {
@@ -45,9 +39,7 @@ export default {
   components: {
 
     'van-nav-bar': NavBar,
-    'van-icon': Icon,
-    'van-steps': Steps,
-    'van-step': Step
+    'van-icon': Icon
 
   }
 }
@@ -109,5 +101,20 @@ header {
   line-height: 60px;
   color: white;
   font-size: 14px;
+}
+.problemlist {
+  margin-top: 10px;
+}
+.problem {
+  font-size: 15px;
+  line-height: 25px;
+  font-weight: 600;
+  text-align: left;
+}
+.answer {
+  font-size: 14px;
+  line-height: 18px;
+  text-indent: 2em;
+  text-align: left;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 
   <div class="box">
-    <h3>添加加盟店列表</h3>
+    <h3>加盟店列表</h3>
     <van-cell v-for="(item,index) in list"
               :title="item.store_name"
               is-link
@@ -27,50 +27,7 @@ export default {
     }
   },
   created () {
-    var _that = this
-    var userinfo = localStorage.getItem('userinfo')
-    var onoff = true
-    if (userinfo == 'undefined' || userinfo == null || onoff) {
-      var urls = window.location.href.split('?').toString()
-      var code = _that.getQueryString('code')
-      if (code !== '' && code !== null && code !== undefined) {
-        _that.$http
-          .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
-          .then(function (response) {
-            _that._data.text1 = response.data
-            localStorage.setItem('userinfo', JSON.stringify(response.data))
-            var arr = response.data.wk_role;
-            if (arr == null) {
-              Toast('您还不是加盟店伙伴，请先注册加盟店')
-            } else {
-              _that.run()
-            }
 
-
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-      } else {
-        //					获取code
-        let formDatas = new FormData()
-        formDatas.append('r_url', urls)
-        _that.$http.post(_that.$api + '/wx/worker/wx_js_sign', formDatas)
-
-          .then(function (response) {
-            urls = encodeURIComponent(urls)
-            let link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' +
-              response.data.appId +
-              '&redirect_uri=' +
-              urls +
-              '&response_type=code&scope=snsapi_userinfo&state=STATE&connect_redirect=1#wechat_redirect'
-            // window.location.replace(link)
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-      }
-    }
   },
   mounted () {
     this.run()
@@ -80,9 +37,9 @@ export default {
     run () {
       var _that = this
       var urls = window.location.href.split('?')[0]
-      var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
-      var user_headimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
-      var nick_name = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
+      var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
+      var user_headimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
+      var nick_name = JSON.parse(localStorage.getItem('userinfo')).muser.nick
 
       _that.$http
         .post(_that.$api + '/wx/ptnr/get_partner_uid', {

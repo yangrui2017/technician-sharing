@@ -24,13 +24,20 @@
           <van-col span="12">可提现金额：232</van-col>
         </van-row>
       </div>
+      <div class="detailed">
+        <van-row>
+          <van-col span="12">本月订单数：100</van-col>
+
+          <van-col span="12">本月盈利：144450</van-col>
+        </van-row>
+      </div>
     </header>
     <section>
       <van-cell title="申请提现"
                 is-link
                 class="cells"
                 to="withdrawal" />
-      <van-cell title="资金明细"
+      <van-cell title="账单明细"
                 is-link
                 class="cells"
                 to="franchise-details" />
@@ -39,10 +46,6 @@
                 class="cells"
                 to="franchise-worker" />
 
-      <van-cell title="管理技师"
-                is-link
-                class="cells"
-                to="franchise-adopt" />
       <van-cell title="使用帮助"
                 is-link
                 class="cells"
@@ -59,9 +62,7 @@ export default {
   data () {
     return {
       onoff: false,
-      jonagent: false,
-      show: false,
-      nickname: '2132132',
+      nickname: '上海市某某店',
       headerimg: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599727586313&di=9c396094d10f0aa13306dd4eb9802ca6&imgtype=0&src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201408%2F30%2F20140830180834_XuWYJ.png',
       sharenumber: '20',
       comm: '',
@@ -75,103 +76,44 @@ export default {
     }
   },
   created () {
-    var openid = localStorage.getItem('openids')
-    var onoff = true
-    if (openid == 'undefined' || openid == null || onoff) {
-      var _that = this
-      var urls = window.location.href.split('?').toString()
-      var code = _that.getQueryString('code')
-      if (code !== '' && code !== null && code !== undefined) {
-        _that.$http
-          .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
-          .then(function (response) {
-            localStorage.setItem('openids', response.data.openid)
-            localStorage.setItem('userinfo', JSON.stringify(response.data))
-            if (response.data.xcx_uid == null) {
-              _that.run()
-            } else {
-              _that._data.onoff = true
-              _that._data.language = '您已加盟技师，请在技师账户查看您的权益'
-            }
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-      } else {
-        //					获取code
-        let formDatas = new FormData()
-        formDatas.append('r_url', urls)
-        _that.$http.post(_that.$api + '/wx/worker/wx_js_sign', formDatas)
 
-          .then(function (response) {
-            urls = encodeURIComponent(urls)
-            let link = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' +
-              response.data.appId +
-              '&redirect_uri=' +
-              urls +
-              '&response_type=code&scope=snsapi_userinfo&state=STATE&connect_redirect=1#wechat_redirect'
-            // window.location.replace(link)
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-      }
-    }
   },
   mounted () {
+    this.run()
   },
   methods: {
     run () {
       var _that = this
       var urls = window.location.href.split('?')[0]
-      var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
-      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
-      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
+      var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
+      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
+      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).muser.nick
 
       _that.$http
-        .get(_that.$api + '/wx/agent/get_by_unionid?unionid=' + unionid)
-        .then(rs => {
-          if (rs.data == null) {
-            _that._data.onoff = true
-            _that._data.jonagent = true
-            _that._data.language = '想要加盟代理吗？成为E帮车服代理，您将拥有所推广会员的所有服务消费和商品消费的提成权益，一次推广，终身受益！加盟请点击公众号“代理加盟”菜单申请注册。'
-          } else {
-            if (rs.data.is_active == '0') {
-              _that._data.onoff = true
-              _that._data.jonagent = true
-              _that._data.language = '想要加盟代理吗？成为E帮车服代理，您将拥有所推广会员的所有服务消费和商品消费的提成权益，一次推广，终身受益！加盟请点击公众号“代理加盟”菜单申请注册。'
-            } else if (rs.data.is_active == '2') {
-              _that.$http
-                .post(_that.$api + '/wx/agent/get_his', {
-                  'unionid': unionid
-                })
-                .then(function (response) {
-                  _that._data.comm = response.data.comm.amount
-                  _that._data.commlCaimed = response.data.comm.amount_claimed
-                  _that._data.commPaid = response.data.comm.amount_paid
-                  _that._data.list = response.data.comm_his.awardByMonth
-                })
-                .catch(function (error) {
-                  console.log(error)
-                });
-              _that.$http
-                .post(_that.$api + '/wx/worker/fans', {
-                  'unionid': unionid
-                })
-                .then(function (response) {
-                  _that._data.fanslist = response.data.fan_member;
-                  _that._data.fansnumber = response.data.fan_member.length;
-
-                  console.log()
-                })
-                .catch(function (error) {
-                  console.log(error)
-                })
-            }
-          }
+        .post(_that.$api + '/wx/agent/get_his', {
+          'unionid': unionid
         })
-        .catch(err => {
-          console.log(err)
+        .then(function (response) {
+          _that._data.comm = response.data.comm.amount
+          _that._data.commlCaimed = response.data.comm.amount_claimed
+          _that._data.commPaid = response.data.comm.amount_paid
+          _that._data.list = response.data.comm_his.awardByMonth
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+      _that.$http
+        .post(_that.$api + '/wx/worker/fans', {
+          'unionid': unionid
+        })
+        .then(function (response) {
+          _that._data.fanslist = response.data.fan_member;
+          _that._data.fansnumber = response.data.fan_member.length;
+
+          console.log()
+        })
+        .catch(function (error) {
+          console.log(error)
         })
     },
     onClickLeft () {
@@ -190,12 +132,7 @@ export default {
       if (r != null) return unescape(r[2])
       return null
     },
-    join () {
-      var _that = this
-      _that.$router.push({
-        path: '/agent-examine'
-      })
-    },
+    
     withdrawal () {
       var _that = this
       _that.$router.push({
@@ -281,7 +218,7 @@ header {
   text-align: center;
 }
 .detailed {
-  line-height: 60px;
+  line-height: 30px;
   color: white;
   font-size: 14px;
 }

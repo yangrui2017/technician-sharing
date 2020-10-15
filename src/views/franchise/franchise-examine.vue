@@ -39,17 +39,11 @@ export default {
           .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
           .then(function (response) {
             localStorage.setItem('userinfo', JSON.stringify(response.data))
-            var arr = response.data.mpuser.wk_role;
+            var arr = response.data.wk_role;
             if (arr == null) {
               _that.run()
-            } else {
-              arr.forEach((item, index) => {
-                if (item == "partner") {
-                  _that._data.language = '您已经是加盟店'
-                } else {
-                  _that.run()
-                }
-              })
+            }if(arr == "partner") {
+              _that._data.language = '您已经是加盟店'
             }
 
 
@@ -90,9 +84,9 @@ export default {
     run () {
       var _that = this
       var urls = window.location.href.split('?')[0]
-      var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
-      var user_headimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
-      var nick_name = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
+      var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
+      var user_headimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
+      var nick_name = JSON.parse(localStorage.getItem('userinfo')).muser.nick
 
       _that.$http
         .post(_that.$api + '/wx/ptnr/get_partner_uid', {

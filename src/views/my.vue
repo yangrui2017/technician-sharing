@@ -2,198 +2,14 @@
   <div class="box">
     <div class="cover"
          v-if="onoff">
-      <h3>代理账户</h3>
+      <h3>账户身份</h3>
       <div class="cont">
         <img src='../assets/examine.png'
              class="img">
         <div class="text">{{language}}</div>
-        <div class="joinbut"
-             v-if="jonagent">
-          <van-button plain
-                      type="info"
-                      @click="join()">代理加盟
-          </van-button>
-        </div>
 
       </div>
     </div>
-    <header>
-      <div class="usertext">
-        <img :src="headerimg"
-             class="headerimg" />
-        <div class="header">账户名：{{nickname}}</div>
-      </div>
-    </header>
-    <van-tabs background="white">
-      <van-tab title="资金">
-        <div class="mytitle">
-          <van-row>
-            <van-col span="12"
-                     class="">
-              <div class="capitaltext">
-                <p class="balance">
-                  账户余额：
-                </p>
-                <p class="balanceint">${{comm}}</p>
-              </div>
-
-              <div class="capitaltext">
-                可提现额:<span>${{commPaid}}</span>
-              </div>
-
-              <div class="capitaltext">
-                已提现总额：<span>${{commlCaimed}}</span>
-              </div>
-              <div class="reminder"
-                   v-if="show">
-                提现审核中
-              </div>
-            </van-col>
-            <van-col span="6">
-
-            </van-col>
-            <van-col span="6"
-                     class="capitaltext">
-              <div class="but">
-                <van-button type="primary"
-                            plain
-                            block
-                            size="small"
-                            round
-                            @click="withdrawal()">
-                  申请提现
-                </van-button>
-              </div>
-              <div class="but">
-                <van-button type="primary"
-                            plain
-                            block
-                            size="small"
-                            @click="capitallink('capital')"
-                            round>
-                  资金明细
-                </van-button>
-              </div>
-
-            </van-col>
-          </van-row>
-        </div>
-
-        <div class="listdiv"
-             v-for="(item,index) in list"
-             :key="index">
-          <div class="listtitle">
-            <div>{{item.ym}}</div>
-            <div class="listtitlediv">
-              <!-- <van-button type="primary"
-                          plain
-                          round
-                          size="small"
-                          @click="capitallink('capital')">明细</van-button> -->
-            </div>
-          </div>
-
-          <div class="listtext">
-            <div class="listtextleft detailed">服务佣金</div>
-            <div class="listtextright detailed">{{item.commision}}</div>
-          </div>
-
-        </div>
-
-      </van-tab>
-      <van-tab title="积分">
-        <div class="mytitle">
-          <van-row>
-            <van-col span="12"
-                     class="">
-              <div class="integraltext">
-                当前积分：<span>123</span>
-              </div>
-            </van-col>
-            <van-col span="6">
-
-            </van-col>
-            <van-col span="6"
-                     class="capitaltext">
-              <div class="buts">
-                <van-button type="primary"
-                            plain
-                            block
-                            size="small"
-                            @click="capitallink('integral')"
-                            round>
-                  积分明细
-                </van-button>
-              </div>
-
-            </van-col>
-          </van-row>
-        </div>
-
-        <div class="listdiv">
-          <div class="listtitle">
-            <div>2020年5月</div>
-            <div class="listtitlediv">
-              <!-- <van-button type="primary"
-                          plain
-                          round
-                          size="small">明细</van-button> -->
-            </div>
-          </div>
-
-          <div class="listtext">
-            <div class="listtextleft detailed">代理积分</div>
-            <div class="listtextright detailed">+122积分</div>
-          </div>
-
-        </div>
-      </van-tab>
-      <van-tab title="会员">
-        <div class="mytitle">
-          <van-row>
-            <van-col span="18"
-                     class="">
-              <div class="integraltext">
-                您成功推广的会员总数：<span>{{fansnumber}}</span>
-              </div>
-            </van-col>
-
-            <van-col span="6"
-                     class="capitaltext">
-              <!-- <div class="buts">
-                <van-button type="primary"
-                            plain
-                            block
-                            size="small"
-                            @click="capitallink('integral')"
-                            round>
-                  资金明细
-                </van-button>
-              </div> -->
-
-            </van-col>
-          </van-row>
-
-        </div>
-        <div class="listdivs">
-          <div class="tabletitle">会员详情列表</div>
-          <table class="hovertable">
-            <tr>
-              <th>关注日期</th>
-              <th>会员昵称</th>
-            </tr>
-            <tr v-for="(item,index) in fanslist">
-              <td>{{item.created_on}}</td>
-              <td>{{item.nick}}</td>
-            </tr>
-
-          </table>
-        </div>
-      </van-tab>
-    </van-tabs>
-
-    <div class="footer">----------------已显示今年所有记录----------------</div>
-
   </div>
 </template>
 
@@ -204,7 +20,6 @@ export default {
   data () {
     return {
       onoff: false,
-      jonagent: false,
       show: false,
       nickname: '',
       headerimg: '',
@@ -220,9 +35,10 @@ export default {
     }
   },
   created () {
-    var openid = localStorage.getItem('openids')
+    console.log()
+    var userinfo = JSON.parse(localStorage.getItem('userinfo'))
     var onoff = true
-    if (openid == 'undefined' || openid == null || onoff) {
+    if (userinfo == 'undefined' || userinfo == null || onoff) {
       var _that = this
       var urls = window.location.href.split('?').toString()
       var code = _that.getQueryString('code')
@@ -230,14 +46,34 @@ export default {
         _that.$http
           .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
           .then(function (response) {
-            localStorage.setItem('openids', response.data.openid)
             localStorage.setItem('userinfo', JSON.stringify(response.data))
-            if (response.data.xcx_uid == null) {
-              _that.run()
-            } else {
-              _that._data.onoff = true
+            var arr = response.data.wk_role;
+            if (arr === null) {
+              _that.$router.push({
+                path: '/agent-examine'
+              })
+            } else if (arr == "partner") {
+              if (response.data.partnerInfo.is_active == "2") {
+                _that.$router.push({
+                  path: '/franchise-partner'
+                })
+              } else {
+                _that._data.language = '您还不是加盟伙伴，请等待申请通过或再次申请'
+              }
+
+            } else if (arr == "worker") {
               _that._data.language = '您已加盟技师，请在技师账户查看您的权益'
+            } else if (arr == "agent") {
+              if (response.data.agentInfo.is_active == "2") {
+                _that.$router.push({
+                  path: '/agent-account'
+                })
+              } else {
+                _that._data.language = '您还不是代理，请等待申请通过或再次申请'
+              }
+
             }
+
           })
           .catch(function (error) {
             console.log(error)
@@ -266,90 +102,17 @@ export default {
   mounted () {
   },
   methods: {
-    run () {
-      var _that = this
-      var urls = window.location.href.split('?')[0]
-      var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
-      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
-      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
 
-      _that.$http
-        .get(_that.$api + '/wx/agent/get_by_unionid?unionid=' + unionid)
-        .then(rs => {
-          if (rs.data == null) {
-            _that._data.onoff = true
-            _that._data.jonagent = true
-            _that._data.language = '想要加盟代理吗？成为E帮车服代理，您将拥有所推广会员的所有服务消费和商品消费的提成权益，一次推广，终身受益！加盟请点击公众号“代理加盟”菜单申请注册。'
-          } else {
-            if (rs.data.is_active == '0') {
-              _that._data.onoff = true
-              _that._data.jonagent = true
-              _that._data.language = '想要加盟代理吗？成为E帮车服代理，您将拥有所推广会员的所有服务消费和商品消费的提成权益，一次推广，终身受益！加盟请点击公众号“代理加盟”菜单申请注册。'
-            } else if (rs.data.is_active == '2') {
-              _that.$http
-                .post(_that.$api + '/wx/agent/get_his', {
-                  'unionid': unionid
-                })
-                .then(function (response) {
-                  _that._data.comm = response.data.comm.amount
-                  _that._data.commlCaimed = response.data.comm.amount_claimed
-                  _that._data.commPaid = response.data.comm.amount_paid
-                  _that._data.list = response.data.comm_his.awardByMonth
-                })
-                .catch(function (error) {
-                  console.log(error)
-                });
-              _that.$http
-                .post(_that.$api + '/wx/worker/fans', {
-                  'unionid': unionid
-                })
-                .then(function (response) {
-                  _that._data.fanslist = response.data.fan_member;
-                  _that._data.fansnumber = response.data.fan_member.length;
-
-                  console.log()
-                })
-                .catch(function (error) {
-                  console.log(error)
-                })
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    },
     getQueryString (name) {
       var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
       var r = window.location.search.substr(1).match(reg)
       if (r != null) return unescape(r[2])
       return null
     },
-    join () {
-      var _that = this
-      _that.$router.push({
-        path: '/agent-examine'
-      })
-    },
-    withdrawal () {
-      var _that = this
-      _that.$router.push({
-        path: '/withdrawal'
-      })
-    },
 
-    capitallink (value, index) {
-      var _that = this
-      var date = new Date()
-      if (index == undefined) {
-        var month = date.getMonth() + 1
-      } else {
-        var month = index
-      }
-      _that.$router.push({
-        path: '/fund-details?type=' + value + '&month=' + month
-      })
-    }
+
+
+
   },
   components: {
     'van-tabs': Tabs,

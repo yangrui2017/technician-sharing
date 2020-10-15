@@ -11,7 +11,7 @@ import axios from 'axios'
 import 'vant/lib/icon/local.css';
 import VueJsonp from 'vue-jsonp'
 // import Vant from 'vant'
-
+Vue.prototype.HOST = '/apis'
 // import 'vant/lib/index.css'
 // import VueAwesomeSwiper from 'vue-awesome-swiper'
 // import 'swiper/dist/css/swiper.css'

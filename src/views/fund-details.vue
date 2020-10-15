@@ -116,14 +116,14 @@ export default {
     var _that = this
     var type = _that.getQueryString('type')
     var month = _that.getQueryString('month')
-    var unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
+    var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
     if (type == 'capital') {
       _that._data.type = '奖金'
     } else {
       _that._data.type = '积分'
     }
-    _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).userData.headimgurl
-    _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).userData.nickname
+    _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
+    _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).muser.nick
 
     _that.$http
       .post(_that.$api + '/wx/agent/get_his', {

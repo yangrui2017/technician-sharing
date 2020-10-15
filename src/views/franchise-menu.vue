@@ -2,24 +2,20 @@
   <div class="box">
     <h3>加入E帮车服</h3>
     <div class="listbox">
-      <div class="list">
-        <p>(如需技师加盟请点击下方按钮)</p>
+      <div class="list listbut"
+           @click="listbut1()">
+        <p>无需文凭，无需口才，收入过万挺简单，点击加入技师
+        </p>
+      </div>
+      <div class="list listbut2"
+           @click="listbut2()">
+        <p>想月入过万，告别月光族么？点击加入代理</p>
 
-        <div class="listbut">
-          <router-link to="/worker-examine">技师加盟</router-link>
-        </div>
       </div>
-      <div class="list">
-        <p>(如需代理加盟请点击下方按钮)</p>
-        <div class="listbut">
-          <router-link to="/agent-examine">代理加盟</router-link>
-        </div>
-      </div>
-      <div class="list">
-        <p>(如需加盟店加盟请点击下方按钮)</p>
-        <div class="listbut">
-          <router-link to="/franchise-examine">加盟店加盟</router-link>
-        </div>
+      <div class="list listbut3"
+           @click="listbut3()">
+        <p>E帮洗车加盟伙伴，我们需要你</p>
+
       </div>
     </div>
   </div>
@@ -34,6 +30,21 @@ export default {
   mounted () {
   },
   methods: {
+    listbut1 () {
+      this.$router.push({
+        path: '/worker-examine'
+      })
+    },
+    listbut2 () {
+      this.$router.push({
+        path: '/agent-examine'
+      })
+    },
+    listbut3 () {
+      this.$router.push({
+        path: '/franchise-examine'
+      })
+    },
   },
   components: {
 
@@ -45,8 +56,8 @@ export default {
 <style scoped>
 .box {
   width: 100%;
-  height: 100%;
   background: #f2f3f5;
+  height: 100%;
 }
 h3 {
   background: #ffda44;
@@ -55,26 +66,41 @@ h3 {
   width: 100%;
 }
 .listbox {
-  padding-top: 50px;
+  background: #f2f3f5;
+  padding-bottom: 20px;
 }
 .list {
+  margin: 0px;
+  padding: 0px;
   margin-top: 30px;
+
+  width: 90%;
+  margin-left: 5%;
+  border-radius: 10px;
+  border: none;
+  height: 150px;
+  box-shadow: 4px 4px 4px #808080;
 }
+
 .list p {
-  margin: 0;
+  margin: 0 auto;
+  width: 80%;
+  height: 100%;
+  line-height: 30px;
+  padding-top: 20px;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
 }
 .listbut {
-  width: 50%;
-  margin-left: 25%;
-  border-radius: 10px;
-  line-height: 50px;
-  background: #ffda44;
-  margin-top: 10px;
+  background: url("../assets/menu.jpg") no-repeat;
+  background-size: 100% 100%;
 }
-.listbut a {
-  color: black;
-  text-decoration: none;
+.listbut2 {
+  background: url("../assets/menu5.jpg") no-repeat;
+  background-size: 100% 100%;
+}
+.listbut3 {
+  background: url("../assets/menu3.jpg") no-repeat;
+  background-size: 100% 100%;
 }
 </style>

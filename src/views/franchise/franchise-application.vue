@@ -183,7 +183,7 @@ export default {
       } else if (_that._data.degree == '') {
         Toast('请上传身份证')
       } else {
-        _that._data.personal.unionid = JSON.parse(localStorage.getItem('userinfo')).userData.unionid
+        _that._data.personal.unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
         _that._data.personal.idcard1 = JSON.parse(sessionStorage.getItem('franchiseimage')).idcard1
         _that._data.personal.idcard2 = JSON.parse(sessionStorage.getItem('franchiseimage')).idcard2
         _that._data.personal.holdcard = JSON.parse(sessionStorage.getItem('franchiseimage')).holdcard

@@ -49,9 +49,18 @@ export default {
   },
   methods: {
     agree () {
-      this.$router.push({
-        path: '/agent-agreement?type=worker'
-      })
+      var _that = this
+      if (JSON.parse(localStorage.getItem('userinfo')).store_list
+        != "null") {
+        _that.$router.push({
+          path: '/worker-regist'
+        })
+      } else {
+        _that.$router.push({
+          path: '/agent-agreement?type=worker'
+        })
+      }
+
     }
   },
   components: {
