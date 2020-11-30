@@ -50,12 +50,12 @@ export default {
             var arr = response.data.wk_role;
             if (arr === null) {
               _that.$router.push({
-                path: '/agent-examine'
+                path: '/franchise-menu'
               })
             } else if (arr == "partner") {
               if (response.data.partnerInfo.is_active == "2") {
                 _that.$router.push({
-                  path: '/franchise-partner'
+                  path: '/franchise-list'
                 })
               } else {
                 _that._data.language = '您还不是加盟伙伴，请等待申请通过或再次申请'
@@ -71,7 +71,6 @@ export default {
               } else {
                 _that._data.language = '您还不是代理，请等待申请通过或再次申请'
               }
-
             }
 
           })
@@ -109,10 +108,6 @@ export default {
       if (r != null) return unescape(r[2])
       return null
     },
-
-
-
-
   },
   components: {
     'van-tabs': Tabs,

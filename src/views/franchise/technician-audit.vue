@@ -1,15 +1,15 @@
 <template>
   <div class="box">
-    <van-nav-bar title="本月技师洗车详情"
+    <van-nav-bar title="技师审核"
                  left-text="返回"
                  left-arrow
                  @click-left="onClickLeft">
     </van-nav-bar>
     <div class="listdivs">
-      <van-cell v-for="(item,index) in workerlist"
+      <van-cell v-for="(item,index) in list"
                 :title="item.user_name"
-                @click="addmanage()"
-                :value="item.order_num+'单'"
+                @click="addmanage(item)"
+                value="待审核"
                 :key="index" />
 
     </div>
@@ -17,31 +17,29 @@
 </template>
 
 <script>
-
-import { NavBar, Icon, Cell, CellGroup, Toast } from 'vant'
+import { NavBar, Icon, Cell, CellGroup, Dialog, Toast } from 'vant'
 var url = require('../worker/url.js')
 export default {
   name: 'HelloWorld',
   data () {
     return {
       active: 4,
-      workerlist: []
+      list: []
 
     }
   },
   mounted () {
     var _that = this;
-    var store_id = JSON.parse(sessionStorage.getItem('nowstore')).store_id
+    var store_id = this.getQueryString('store_id');
+
     _that.$http
-      .post(url + '/api/store/storeStuff', {
+      .post(url + '/api/store/storeStuffExList', {
         "access_key": "xunjiepf",
         "store_id": store_id
       })
       .then(rs => {
-        if (rs.data == "") {
-          Toast('该加盟店还未添加技师!')
-        }
-        _that._data.workerlist = rs.data
+        Toast("目前没有可审核技师")
+        _that._data.list = rs.data;
       })
       .catch(err => {
         console.log(err)
@@ -49,8 +47,9 @@ export default {
   },
   methods: {
     onClickLeft () {
+      var store_id = this.getQueryString('store_id')
       this.$router.push({
-        path: '/franchise-partner'
+        path: '/franchise-partner?store_id=' + store_id
       })
     },
     getQueryString (name) {
@@ -59,8 +58,48 @@ export default {
       if (r != null) return unescape(r[2])
       return null
     },
-    addmanage () {
-      alert(1)
+    addmanage (item) {
+      var _that = this;
+      var store_id = this.getQueryString('store_id')
+      Dialog.confirm({
+        title: '技师审核',
+        message: '是否同意' + item.user_name + '技师通过审核',
+        closeOnClickOverlay: true,
+        confirmButtonText: "同意",
+        cancelButtonText: "拒绝"
+      })
+        .then(() => {
+          _that.$http
+            .post(url + '/api/store/updateStuff', {
+              "access_key": "xunjiepf",
+              "uid": item.uid,
+              "auth_state": 3
+            })
+            .then(rs => {
+              if (rs.data.status == "1") {
+                Toast("审核通过")
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        })
+        .catch(() => {
+          _that.$http
+            .post(url + '/api/store/updateStuff', {
+              "access_key": "xunjiepf",
+              "store_id": store_id,
+              "auth_state": 4
+            })
+            .then(rs => {
+              if (rs.data.status == "1") {
+                Toast("审核不通过")
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        });
     }
 
 
@@ -70,7 +109,8 @@ export default {
     'van-nav-bar': NavBar,
     'van-icon': Icon,
     'van-cell-group': CellGroup,
-    'van-cell': Cell
+    'van-cell': Cell,
+    [Dialog.Component.name]: Dialog.Component,
 
   }
 }

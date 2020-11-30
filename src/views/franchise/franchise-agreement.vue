@@ -17,7 +17,7 @@
 
 <script>
 import { Tab, Tabs } from 'vant'
-// var url = require('./url.js')
+var url = require('../worker/url.js')
 export default {
 
   data () {
@@ -37,14 +37,14 @@ export default {
   mounted () {
     var _that = this
 
-    // _that.$http
-    //   .get(url + '/api/Register/getProtocolConfig?access_key=xunjiepf')
-    //   .then(rs => {
-    //     _that._data.content2 = rs.data.info.agent_protocol
-    //   })
-    // .catch(err => {
-    //   console.log(err)
-    // })
+    _that.$http
+      .get(url + '/api/store/getProtocolConfig?access_key=xunjiepf')
+      .then(rs => {
+        _that._data.content2 = rs.data.info
+      })
+      .catch(err => {
+        console.log(err)
+      })
   },
   methods: {
     agree () {

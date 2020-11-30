@@ -250,8 +250,40 @@ const router = new Router({
         title: '门店明细'
       }
     },
-
-
+    {
+      path: '/shopowner-regist',
+      name: 'shopowner-regist',
+      component: () => import('@/views/shopowner-regist'),
+      meta: {
+        title: '店长注册'
+      }
+    },
+    {
+      path: '/technician-audit',
+      name: 'technician-audit',
+      component: () => import('@/views/franchise/technician-audit'),
+      meta: {
+        title: '店长审核'
+      }
+    },
+    {
+      path: '/franchise-modify',
+      name: 'franchise-modify',
+      component: () => import('@/views/franchise/franchise-modify'),
+      meta: {
+        title: '个人信息修改'
+      },
+    },
+      {
+        path: '/franchise-store',
+        name: 'franchise-store',
+        component: () => import('@/views/franchise/franchise-store'),
+        meta: {
+          title: '门店信息修改'
+        }
+     
+    }
+    
 
 
   ]

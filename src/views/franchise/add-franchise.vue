@@ -20,13 +20,30 @@
                     @cancel="showArea = false" />
         </van-popup>
         <van-field v-model="company.store_name"
-                   required
                    label="加盟店名称"
                    placeholder="请输入名称" />
         <van-field v-model="company.address"
-                   required
                    label="加盟店地址"
                    placeholder="请输入地址" />
+        <van-field v-model="company.ptnr_rate_req"
+                   label="管理费率"
+                   placeholder="请输入数值（0.1）" />
+
+        <van-cell title="是否代发劳务费"
+                  class="other">
+          <van-radio-group v-model="company.to_pay_req">
+            <van-row>
+              <van-col span="12">
+                <van-radio name="0"
+                           checked-color="#07c160">否</van-radio>
+              </van-col>
+              <van-col span="12">
+                <van-radio name="1"
+                           checked-color="#07c160">是</van-radio>
+              </van-col>
+            </van-row>
+          </van-radio-group>
+        </van-cell>
 
         <img :src="license"
              class="imgurl2" />
@@ -101,7 +118,9 @@ export default {
         "store_pic": "",
         "store_loc": "",
         "area_id": 0,
-        "store_name": ""
+        "store_name": "",
+        "to_pay_req": "1",
+        "ptnr_rate_req": ""
       }
 
     }
@@ -140,29 +159,35 @@ export default {
       }
     },
     addresstranslation (res) {
+      Toast('请稍等！')
       var _that = this
       let url = ' https://api.map.baidu.com/geocoding/v3/?ak=7hhI8dTWwLRQ8KLTWqi8kOoLUhClNDxS&output=json&address=' + res
       _that.$jsonp(url)
         .then(json => {
-          _that._data.company.store_loc = JSON.stringify(json.result.location);
-          _that.$http
-            .post(_that.$api + '/api/map/get_rate', json.result.location)
-            .then(rs => {
-              _that._data.company.area_id = rs.data.area_id
+          if (json.status == "1") {
+            Toast('请填写详细地址')
+          } else {
+            _that._data.company.store_loc = JSON.stringify(json.result.location);
+            _that.$http
+              .post(_that.$api + '/api/map/get_rate', json.result.location)
+              .then(rs => {
+                _that._data.company.area_id = rs.data.area_id
 
-              console.log(_that._data.company)
-              _that.$http
-                .post(_that.$api + '/wx/ptnr/update_store', _that._data.company)
-                .then(rs => {
-                  Toast('正在审核，请稍后')
-                })
-                .catch(err => {
-                  console.log(err)
-                })
-            })
-            .catch(err => {
-              console.log(err)
-            })
+                console.log(_that._data.company)
+                _that.$http
+                  .post(_that.$api + '/wx/ptnr/update_store', _that._data.company)
+                  .then(rs => {
+                    Toast('已添加加盟店信息，请等待审核通过！')
+                  })
+                  .catch(err => {
+                    console.log(err)
+                  })
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }
+
         })
         .catch(err => {
           console.log(err)
@@ -374,9 +399,14 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+* {
+  text-align: left;
+}
+
 h3 {
   height: 50px;
   margin: 0;
+  text-align: center;
   line-height: 50px;
   color: white;
   background: rgb(41, 89, 233);
@@ -402,7 +432,6 @@ h3 {
   position: relative;
   display: inline-block;
   background: #d0eeff;
-
   margin-top: 20px;
   border: 1px solid #99d3f5;
   border-radius: 4px;
@@ -412,6 +441,9 @@ h3 {
   text-decoration: none;
   text-indent: 0;
   line-height: 20px;
+  width: 50%;
+  margin-left: 19%;
+  text-align: center;
 }
 .file input {
   position: absolute;
@@ -426,9 +458,13 @@ h3 {
 .imgurl2 {
   width: 80%;
   height: 200px;
+  margin-left: 10%;
 }
 .van-button--normal {
-  width: 75%;
+  width: 70%;
   margin-top: 20px;
+  margin-left: 15%;
+  text-align: center;
+  margin-bottom: 20px;
 }
 </style>

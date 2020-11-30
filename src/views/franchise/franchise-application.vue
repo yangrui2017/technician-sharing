@@ -14,6 +14,26 @@
                  label="身份证号"
                  type="tel"
                  placeholder="请输入身份证号" />
+      <van-field v-model="personal.bank_name"
+                 required
+                 label="银行名称"
+                 type="tel"
+                 placeholder="请输入银行名称" />
+      <van-field v-model="personal.bank_acc_name"
+                 required
+                 label="开户姓名"
+                 placeholder="请输入开户人姓名" />
+      <van-field v-model="personal.bank_account"
+                 required
+                 label="银行账号"
+                 type="tel"
+                 placeholder="请输入您的银行卡账号" />
+      <van-field v-model="personal.bank_name"
+                 required
+                 label="银行名称"
+                 type="tel"
+                 placeholder="请输入银行名称" />
+
       <van-field v-model="personal.phone"
                  center
                  clearable
@@ -30,7 +50,7 @@
                  center
                  clearable
                  required
-                 label="短信验证码"
+                 label="短信验证"
                  type="tel"
                  placeholder="请输入短信验证码">
         <van-button slot="button"
@@ -86,7 +106,9 @@ export default {
         unionid: '',
         partner_type: "store",
         name: '',
-
+        bank_account: "",
+        bank_acc_name: "",
+        bank_name: "",
         person_id: '',
         phone: '',
         idcard1: '',
@@ -137,6 +159,7 @@ export default {
       _that.showArea = false
     },
     phoneverification (value) {
+      Toast('消息已发，请注意查收')
       var _that = this
       var phone = _that._data.personal.phone
       if (phone == '') {
@@ -187,22 +210,44 @@ export default {
         _that._data.personal.idcard1 = JSON.parse(sessionStorage.getItem('franchiseimage')).idcard1
         _that._data.personal.idcard2 = JSON.parse(sessionStorage.getItem('franchiseimage')).idcard2
         _that._data.personal.holdcard = JSON.parse(sessionStorage.getItem('franchiseimage')).holdcard
-        if (sessionStorage.getItem('franchisemessage')) {
-          _that._data.personal.id = JSON.parse(sessionStorage.getItem('franchisemessage')).id
-        }
         _that._data.personal.is_active = 1
-
-        _that.$http
-          .post(_that.$api + '/wx/ptnr/register', _that._data.personal)
-          .then(rs => {
-            Toast('请填写加盟店信息')
-            _that.$router.push({
-              path: '/add-franchise'
+        if (JSON.parse(localStorage.getItem('userinfo')).partnerInfo != null) {
+          _that.$http
+            .post(_that.$api + '/wx/ptnr/update', _that._data.personal)
+            .then(rs => {
+              if (rs.data.errcode == "0") {
+                Toast('请填写加盟店信息')
+                _that.$router.push({
+                  path: '/add-franchise'
+                })
+              } else {
+                Toast('加盟伙伴注册失败')
+              }
             })
-          })
-          .catch(err => {
-            console.log(err)
-          })
+            .catch(err => {
+              console.log(err)
+            })
+        } else {
+          _that.$http
+            .post(_that.$api + '/wx/ptnr/register', _that._data.personal)
+            .then(rs => {
+              if (rs.data.errcode == "0") {
+                Toast('请填写加盟店信息')
+                _that.$router.push({
+                  path: '/add-franchise'
+                })
+              } else {
+                Toast('加盟伙伴注册失败')
+              }
+
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        }
+
+
+
       }
     },
     getQueryString (name) {
@@ -211,8 +256,6 @@ export default {
       if (r != null) return unescape(r[2])
       return null
     },
-
-
   },
   components: {
     'van-tab': Tab,

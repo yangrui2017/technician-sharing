@@ -72,17 +72,13 @@ export default {
       if (index.is_active == 1) {
         Toast('该加盟店正在审核中，请稍等')
       } else {
+        sessionStorage.setItem('nowstore', JSON.stringify(index))
         _that.$router.push({
-          path: '/franchise-partner?store_id=' + index.store_id
+          path: '/franchise-partner'
         })
       }
     },
-    getQueryString (name) {
-      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
-      var r = window.location.search.substr(1).match(reg)
-      if (r != null) return unescape(r[2])
-      return null
-    },
+
   },
   components: {
     'van-cell': Cell,

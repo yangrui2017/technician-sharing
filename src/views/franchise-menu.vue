@@ -2,21 +2,28 @@
   <div class="box">
     <h3>加入E帮车服</h3>
     <div class="listbox">
-      <div class="list listbut"
-           @click="listbut1()">
-        <p>无需文凭，无需口才，收入过万挺简单，点击加入技师
+      <div @click="listbut1()"
+           class="list">
+        <img src="../assets/menu7 (1).jpg"
+             class="img" />
+        <p>还在为打工工资不高苦恼吗？还在为工作不自由压抑郁抑吗？现在，机会来了。无需口才，无需文凭，加入“E”帮洗车技师，即可月入过万 ，“立即申请”，即可加入！点击加入技师
         </p>
       </div>
-      <div class="list listbut2"
-           @click="listbut2()">
-        <p>想月入过万，告别月光族么？点击加入代理</p>
+      <div @click="listbut2()"
+           class="list">
+        <img src="../assets/menu7 (2).jpg"
+             class="img" />
+        <p>“0”元即可创业 半年即可回本 无需人工 24小时营业 真正实现“睡后收入” 最省心省力的创业机会 。点击加入代理</p>
 
       </div>
-      <div class="list listbut3"
-           @click="listbut3()">
-        <p>E帮洗车加盟伙伴，我们需要你</p>
+      <div @click="listbut3()"
+           class="list">
+        <img src="../assets/menu7 (3).jpg"
+             class="img" />
+        <p>想当老板？ 想拥有副业？想实现财务自由？想要收入不打烊？选择“E”帮洗车，开启你的财富人生。点击加入加盟伙伴</p>
 
       </div>
+
     </div>
   </div>
 </template>
@@ -70,37 +77,26 @@ h3 {
   padding-bottom: 20px;
 }
 .list {
-  margin: 0px;
-  padding: 0px;
   margin-top: 30px;
-
   width: 90%;
   margin-left: 5%;
-  border-radius: 10px;
   border: none;
-  height: 150px;
+  border-radius: 10px;
   box-shadow: 4px 4px 4px #808080;
 }
-
+.list .img {
+  width: 100%;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
 .list p {
   margin: 0 auto;
-  width: 80%;
   height: 100%;
-  line-height: 30px;
-  padding-top: 20px;
-  text-align: center;
-  font-size: 16px;
-}
-.listbut {
-  background: url("../assets/menu.jpg") no-repeat;
-  background-size: 100% 100%;
-}
-.listbut2 {
-  background: url("../assets/menu5.jpg") no-repeat;
-  background-size: 100% 100%;
-}
-.listbut3 {
-  background: url("../assets/menu3.jpg") no-repeat;
-  background-size: 100% 100%;
+  padding: 0 2%;
+  line-height: 24px;
+  text-align: left;
+  font-size: 14px;
+  display: table-cell;
+  vertical-align: middle;
 }
 </style>

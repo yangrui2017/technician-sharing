@@ -6,14 +6,21 @@
       <img src='../../assets/examine.png'
            class="img">
       <div class="text">{{language}}</div>
-      <div>{{unionid}}</div>
+      <div v-show="store_onoff">
+        <van-button type="primary"
+                    plain
+                    @click="shopowner()">店长</van-button>
+        <van-button type="primary"
+                    plain
+                    @click="worker()">技师</van-button>
+      </div>
     </div>
 
   </div>
 </template>
 
 <script>
-import { Toast } from 'vant'
+import { Toast, Button } from 'vant'
 var url = require('./url.js')
 export default {
 
@@ -21,7 +28,8 @@ export default {
     return {
       language: '',
       unionid: '',
-      uid: ''
+      uid: '',
+      store_onoff: false
 
     }
   },
@@ -40,7 +48,21 @@ export default {
           .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
           .then(function (response) {
             localStorage.setItem('userinfo', JSON.stringify(response.data))
-            _that.run()
+            if (response.data.errcode == "1") {
+              _that._data.language = '请先关注E帮工作台公众号'
+            }
+            var arr = response.data.wk_role;
+            if (arr == null) {
+
+              _that.run()
+            } else if (arr == "partner") {
+              _that._data.language = '您已经是加盟店，无需注册技师'
+            } else if (arr == "worker") {
+              _that.run();
+            } else if (arr == "agent") {
+              _that._data.language = '您已经是代理，无需注册技师'
+            }
+
           })
           .catch(function (error) {
             console.log(error)
@@ -77,12 +99,24 @@ export default {
     },
     run () {
       var _that = this
-      var urls = window.location.href.split('?')[0]
-
+      var storeWkInvite = JSON.parse(localStorage.getItem('userinfo')).muser.storeWkInvite
+      if (storeWkInvite != null) {
+        _that.store_onoff = true
+      } else {
+        _that.worker()
+      }
+    },
+    shopowner () {
+      var _that = this
+      _that.$router.push({
+        path: '/shopowner-regist'
+      })
+    },
+    worker () {
+      var _that = this
       var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
       var user_headimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
-      var nick_name = JSON.parse(localStorage.getItem('userinfo')).muser.nick
-
+      var nick_name = JSON.parse(localStorage.getItem('userinfo')).muser.nick;
       _that.$http
         .get(url + '/api/register/checkWorker?access_key=xunjiepf&unionid=' + unionid + '&user_headimg=' + user_headimg + '+&nick_name=' + nick_name)
         .then(rs => {
@@ -107,8 +141,9 @@ export default {
         })
     }
   },
-  components: {
 
+  components: {
+    'van-button': Button
   }
 }
 </script>

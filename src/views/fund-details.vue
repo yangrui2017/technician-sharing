@@ -37,7 +37,7 @@
           <div class="listtextright detailed">+122￥</div>
         </div>
       </div> -->
-      <div class="listdiv">
+      <!-- <div class="listdiv">
         <div class="listtitle">
           <div>2020-06-29 15:48:14</div>
           <div class="orderid">订单编号：2019302930323223159</div>
@@ -50,8 +50,8 @@
           <div class="listtextleft detailed">项目名称： 外观简洗</div>
         </div>
 
-      </div>
-      <div class="listdiv">
+      </div> -->
+      <!-- <div class="listdiv">
         <div class="listtitle">
           <div>2020-06-29 15:48:14</div>
           <div class="orderid">订单编号：2019302930323223159</div>
@@ -64,24 +64,23 @@
           <div class="listtextleft detailed">项目名称： 外观简洗</div>
         </div>
 
-      </div>
-      <!-- <div class="listdiv"
+      </div> -->
+      <div class="listdiv"
            v-for="(item,index) in list"
            :key="index">
         <div class="listtitle">
           <div>{{item.created_on}}</div>
-
+          <div class="orderid">订单编号：{{item.order_id}}</div>
         </div>
 
         <div class="listtext">
           <div class="listtextleft detailed">服务佣金</div>
-          <div class="listtextright detailed">{{item.commision}}</div>
-        </div>
-        <div class="listtext">
+          <div class="listtextleft detailed">{{item.commision}}</div>
           <div class="listtextleft detailed">佣金百分比</div>
-          <div class="listtextright detailed">{{item.agent_rate}}</div>
+          <div class="listtextleft detailed">{{item.agent_rate}}</div>
         </div>
-      </div> -->
+
+      </div>
 
     </div>
 
@@ -169,7 +168,6 @@ p {
 }
 .box {
   width: 100%;
-  height: 100%;
   background: #f2f3f5;
 }
 h3 {

@@ -108,7 +108,7 @@
         </van-row>
       </van-radio-group>
     </van-cell>
-    <!-- <van-cell title="是否有电动车">
+    <van-cell title="是否有电动车">
       <van-radio-group v-model="registerform.is_vehicle">
         <van-row>
           <van-col span="12">
@@ -121,8 +121,8 @@
           </van-col>
         </van-row>
       </van-radio-group>
-    </van-cell> -->
-    <!-- <van-cell title="是否有专用洗车机">
+    </van-cell>
+    <van-cell title="是否有专用洗车机">
       <van-radio-group v-model="registerform.is_washing_machine">
         <van-row>
           <van-col span="12">
@@ -135,7 +135,7 @@
           </van-col>
         </van-row>
       </van-radio-group>
-    </van-cell> -->
+    </van-cell>
     <van-cell title="上传身份证"
               is-link
               :value="degree"
@@ -187,7 +187,7 @@
 <script>
 import { Area, Field, Popup, RadioGroup, Radio, Cell, CellGroup, Picker, Button, Toast, Col, Row } from 'vant'
 import md5 from 'js-md5'
-var url = require('./url.js')
+var url = require('./worker/url.js')
 export default {
 
   data () {
@@ -251,10 +251,9 @@ export default {
         ice_name: '',
         ice_tel: '',
         is_experience: '0',
-        // is_vehicle: '1',
-        // is_washing_machine: '0',
-        store_id: "",
-        store_name: ""
+        is_vehicle: '1',
+        is_washing_machine: '0',
+        store_id: ""
       }
 
     }
@@ -269,27 +268,10 @@ export default {
     var degree = _that.getQueryString('degree')
     var onoff = sessionStorage.getItem('onoff')
     var telonoff = sessionStorage.getItem('telonoff')
-    if (JSON.parse(localStorage.getItem('userinfo')).muser.storeWkInvite
-      != null) {
-      _that.$http
-        .post(_that.$api + '/wx/ptnr/get_partner_uid', {
-          "unionid": JSON.parse(localStorage.getItem('userinfo')).muser.storeWkInvite.PartnerId
-        })
-        .then(rs => {
-          var data = [];
-          rs.data.stores.forEach(element => {
-            if (element.is_active == 2) {
-              data.push(element)
-            }
-          });
-          _that._data.store_list = data
-          console.log(_that._data.store_list)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-
-    } else {
+    if (JSON.parse(localStorage.getItem('userinfo')).store_list
+      != "null") {
+      _that._data.store_list = JSON.parse(localStorage.getItem('userinfo')).store_list
+    } if (JSON.parse(localStorage.getItem('userinfo')).store_list.length == 0) {
       _that.store_onoff = false
     }
     if (onoff == 'true') {
@@ -307,13 +289,11 @@ export default {
   },
   methods: {
     onChangeDetail2 (val) {
-      console.log(val.store_id);
+      console.log(val)
       var _that = this
       _that._data.storename = val.store_name
-      _that._data.registerform.store_id = val.store_id;
-      _that._data.registerform.store_name = val.store_name;
+      _that._data.registerform.store_id = val.store_id
       _that.showPicker2 = false
-
     },
     onChangeDetail (val) {
       var _that = this
@@ -400,12 +380,11 @@ export default {
         if (_that._data.hasexperiences) {
           _that._data.registerform.experiences = _that._data.experiences
         }
-        if (JSON.parse(localStorage.getItem('userinfo')).muser.storeWkInvite == null) {
-          _that._data.registerform.store_id = "0";
-          _that._data.registerform.store_name = ""
+        if (JSON.parse(localStorage.getItem('userinfo')).store_list.length == 0) {
+
+          _that._data.registerform.store_id = "0"
 
         }
-
         _that._data.registerform.uid = sessionStorage.getItem('uid');
 
         _that._data.registerform.justImagesId = JSON.parse(sessionStorage.getItem('personal')).idcard1.id
@@ -416,7 +395,9 @@ export default {
           .post(url + '/api/register/saveWorker?access_key=xunjiepf', _that._data.registerform)
           .then(rs => {
             if (rs.data.errcode == '1') {
-              Toast("已注册技师，等待审核通过！")
+              _that.$router.push({
+                path: '/worker-examine'
+              })
             } else {
               Toast(rs.data.errmsg)
             }
@@ -429,21 +410,23 @@ export default {
     // 通过地址获取经纬度
     addresstranslation (res) {
       var _that = this
-      let url = ' https://api.map.baidu.com/geocoding/v3/?ak=7hhI8dTWwLRQ8KLTWqi8kOoLUhClNDxS&output=json&address=' + res
-      _that.$jsonp(url)
+      const KEY = '7hhI8dTWwLRQ8KLTWqi8kOoLUhClNDxS' // key 秘钥自己申请
+      let url = 'http://api.map.baidu.com/geocoder/v2/'
+      _that.$jsonp(url, {
+        ak: KEY,
+        address: res,
+        output: 'json'
+      })
         .then(json => {
-          if (json.status == "1") {
-            Toast('请填写详细地址')
-          } else {
-            _that.$http
-              .post(_that.$api + '/api/map/get_rate', json.result.location)
-              .then(rs => {
-                _that._data.registerform.area_id = rs.data.area_id
-              })
-              .catch(err => {
-                console.log(err)
-              })
-          }
+          console.log(json.result.location)
+          _that.$http
+            .post(_that.$api + '/api/map/get_rate', json.result.location)
+            .then(rs => {
+              _that._data.registerform.area_id = rs.data.area_id
+            })
+            .catch(err => {
+              console.log(err)
+            })
         })
         .catch(err => {
           console.log(err)

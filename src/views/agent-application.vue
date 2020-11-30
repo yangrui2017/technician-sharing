@@ -486,10 +486,8 @@ export default {
         _that.$http
           .post(_that.$api + '/wx/agent/create', _that._data.company)
           .then(rs => {
-            Toast('正在审核，请稍后')
-            _that.$router.push({
-              path: '/agent-examine'
-            })
+            Toast("已注册代理，等待审核通过！")
+
           })
           .catch(err => {
             console.log(err)

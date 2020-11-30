@@ -39,14 +39,20 @@ export default {
           .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
           .then(function (response) {
             localStorage.setItem('userinfo', JSON.stringify(response.data))
+            if (response.data.errcode == "1") {
+              _that._data.language = '请先关注E帮工作台公众号'
+            }
             var arr = response.data.wk_role;
             if (arr == null) {
+
               _that.run()
-            }if(arr == "partner") {
-              _that._data.language = '您已经是加盟店'
+            } else if (arr == "partner") {
+              _that.run()
+            } else if (arr == "worker") {
+              _that._data.language = '您已经是技师，无需注册加盟店'
+            } else if (arr == "agent") {
+              _that._data.language = '您已经是代理，无需注册加盟店'
             }
-
-
           })
           .catch(function (error) {
             console.log(error)
@@ -99,12 +105,14 @@ export default {
             })
           } else {
             if (rs.data.ptnr.is_active == '1') {
-              _that._data.language = '提交成功，资料正在审核中...'
+               _that._data.language = '提交成功，资料正在审核中...'
             } else if (rs.data.ptnr.is_active == '0') {
-              sessionStorage.setItem('franchisemessage', JSON.stringify(rs.data))
+              // sessionStorage.setItem('franchisemessage', JSON.stringify(rs.data))
               _that.$router.push({
                 path: '/franchise-agreement'
               })
+            } else if (rs.data.ptnr.is_active == '2') {
+              _that._data.language = '您已经是加盟店，无需注册加盟店'
             }
           }
         })

@@ -73,11 +73,7 @@
           <div class="listtitle">
             <div>{{item.ym}}</div>
             <div class="listtitlediv">
-              <!-- <van-button type="primary"
-                          plain
-                          round
-                          size="small"
-                          @click="capitallink('capital')">明细</van-button> -->
+
             </div>
           </div>
 
@@ -89,7 +85,7 @@
         </div>
 
       </van-tab>
-      <van-tab title="积分">
+      <!-- <van-tab title="积分">
         <div class="mytitle">
           <van-row>
             <van-col span="12"
@@ -122,10 +118,7 @@
           <div class="listtitle">
             <div>2020年5月</div>
             <div class="listtitlediv">
-              <!-- <van-button type="primary"
-                          plain
-                          round
-                          size="small">明细</van-button> -->
+            
             </div>
           </div>
 
@@ -135,7 +128,7 @@
           </div>
 
         </div>
-      </van-tab>
+      </van-tab> -->
       <van-tab title="会员">
         <div class="mytitle">
           <van-row>
@@ -210,6 +203,7 @@ export default {
 
   },
   mounted () {
+    this.run()
   },
   methods: {
     run () {
@@ -217,13 +211,16 @@ export default {
       var urls = window.location.href.split('?')[0]
       var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
       _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
-      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).muser.nick
+      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).agentInfo.name
 
       _that.$http
         .post(_that.$api + '/wx/agent/get_his', {
           'unionid': unionid
         })
         .then(function (response) {
+          if (_that._data.comm_his == "null") {
+            Toast("该代理目前没有完成订单")
+          }
           _that._data.comm = response.data.comm.amount
           _that._data.commlCaimed = response.data.comm.amount_claimed
           _that._data.commPaid = response.data.comm.amount_paid

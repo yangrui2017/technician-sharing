@@ -37,11 +37,21 @@ export default {
           .get(_that.$api + '/wx/worker/userinfo_by_code?code=' + code)
           .then(function (response) {
             localStorage.setItem('userinfo', JSON.stringify(response.data))
-            if (response.data.muser.xcx_uid == null) {
-              _that.run()
-            } else {
-              _that._data.language = '您已经是技师了，无需注册代理！'
+            if (response.data.errcode == "1") {
+              _that._data.language = '请先关注E帮工作台公众号'
             }
+            var arr = response.data.wk_role;
+            if (arr == null) {
+              _that.run()
+            } else if (arr == "partner") {
+              _that._data.language = '您已经是加盟店，无需注册代理'
+            } else if (arr == "worker") {
+              _that._data.language = '您已经是技师，无需注册代理'
+            } else if (arr == "agent") {
+              _that.run()
+            }
+
+
           })
           .catch(function (error) {
             console.log(error)

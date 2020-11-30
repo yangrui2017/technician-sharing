@@ -1,0 +1,4 @@
+@Host=wx.upctech.com.cn/wx
+
+### get menu
+GET https://{{Host}}/get_menu/

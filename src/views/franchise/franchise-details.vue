@@ -18,7 +18,7 @@
     <div class="content">
       <div class="listdiv">
         <div class="listtitle">
-          <div class="leftdiv">2020年6月</div>
+          <div class="leftdiv">{{time}}</div>
           <div class="listtitlediv">
             <van-button type="primary"
                         plain
@@ -30,39 +30,27 @@
 
         <div class="listtext">
           <div class="listtextleft detailed">订单总数</div>
-          <div class="listtextright detailed">122</div>
+          <div class="listtextright detailed">{{month_order_num}}单</div>
         </div>
 
         <div class="listtext">
-          <div class="listtextleft detailed">订单总额</div>
-          <div class="listtextright detailed">30021￥</div>
+          <div class="listtextleft detailed">月盈利额</div>
+          <div class="listtextright detailed">{{month_net_income}}￥</div>
         </div>
       </div>
-      <div class="listdiv">
+      <div class="listdiv"
+           v-for="(item,index) in list"
+           :key="index">
         <div class="listtitle">
-          <div>2020-06-29 15:48:14</div>
-          <div class="orderid">订单编号：2019302930323223159</div>
+          <div>{{item.create_time}}</div>
+          <div class="orderid">订单编号：{{item.order_no}}</div>
         </div>
 
         <div class="listtext">
-          <div class="listtextleft detailed">佣金：213</div>
-          <div class="listtextleft detailed">项目金额：26.7</div>
-          <div class="listtextleft detailed">会员：挑剔</div>
-          <div class="listtextleft detailed">项目名称： 外观简洗</div>
-        </div>
-
-      </div>
-      <div class="listdiv">
-        <div class="listtitle">
-          <div>2020-06-29 15:48:14</div>
-          <div class="orderid">订单编号：2019302930323223159</div>
-        </div>
-
-        <div class="listtext">
-          <div class="listtextleft detailed">佣金：213</div>
-          <div class="listtextleft detailed">项目金额：26.7</div>
-          <div class="listtextleft detailed">会员：挑剔</div>
-          <div class="listtextleft detailed">项目名称： 外观简洗</div>
+          <div class="listtextleft detailed">佣金：{{item.service_money}}</div>
+          <div class="listtextleft detailed">项目金额：{{item.money}}</div>
+          <div class="listtextleft detailed">服务技师：{{item.user_name}}</div>
+          <div class="listtextleft detailed">项目名称：{{item.item_title}}</div>
         </div>
 
       </div>
@@ -75,7 +63,8 @@
 </template>
 
 <script>
-import { Tab, Tabs, Col, Row, Button, Popup, DatetimePicker, NavBar } from 'vant'
+var url = require('../worker/url.js')
+import { Tab, Tabs, Col, Row, Button, Popup, DatetimePicker, NavBar, Toast } from 'vant'
 export default {
   name: 'HelloWorld',
   data () {
@@ -86,30 +75,74 @@ export default {
       maxDate: new Date(2025, 10, 1),
       currentDate: new Date(),
       show: false,
-      nickname: '',
-      headerimg: '',
-      sharenumber: '20',
+      time: "",
+      month_order_num: "",
+      month_net_income: "",
       list: []
-
     }
   },
   created () {
 
   },
   mounted () {
-    var _that = this
+    var _that = this;
+    var store_id = JSON.parse(sessionStorage.getItem('nowstore')).store_id;
+    var date = new Date();
+    var y = date.getFullYear()
+    var m = date.getMonth() + 1
+    _that._data.time = y + "年" + m + "月"
+    _that.$http
+      .post(url + '/api//store/orderList', {
+        "access_key": "xunjiepf",
+        "store_id": store_id,
+        "year": 0,
+        "month": 0
+      })
+      .then(rs => {
+        _that._data.month_order_num = rs.data.month_order_num
+        _that._data.month_net_income = rs.data.month_net_income
+        _that._data.list = rs.data.list
+      })
+      .catch(err => {
+        console.log(err)
+      })
 
   },
   methods: {
     onClickLeft () {
+      var store_id = this.getQueryString('store_id')
+
       this.$router.push({
-        path: '/franchise-partner'
+        path: '/franchise-partner?store_id=' + store_id
       })
     },
     onConfirm (time) {
-      alert(time)
-      this.value = time
-      this.showPicker = false
+      var _that = this;
+      var date = new Date(time);
+      var y = date.getFullYear(time)
+      var m = date.getMonth(time) + 1
+      _that._data.time = y + "年" + m + "月"
+      var store_id = JSON.parse(sessionStorage.getItem('nowstore')).store_id
+      _that.$http
+        .post(url + '/api//store/orderList', {
+          "access_key": "xunjiepf",
+          "store_id": store_id,
+          "year": y,
+          "month": m
+        })
+        .then(rs => {
+          if (rs.data.month_order_num == "0") {
+            Toast('查询的该月没有订单')
+          }
+          _that._data.month_order_num = rs.data.month_order_num
+          _that._data.month_net_income = rs.data.month_net_income
+          _that._data.list = rs.data.list;
+
+          _that._data.showPicker = false;
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     getQueryString (name) {
       var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')

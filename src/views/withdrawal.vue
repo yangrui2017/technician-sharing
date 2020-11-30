@@ -3,8 +3,7 @@
     <h3>余额提现</h3>
     <div class="header">
       <div class="account">微信账户</div>
-      <div class="changecard"
-           @click="changebank()">更换</div>
+      <div class="changecard">更换</div>
     </div>
     <div class="cont ">
       <van-cell-group>
@@ -13,14 +12,14 @@
                    placeholder="0.00" />
 
       </van-cell-group>
-      <van-row>
-        <van-col span="12"
-                 class="text">当前可提现余额为0.00元</van-col>
-        <van-col span="4"></van-col>
-        <van-col span="8"
-                 class="text2">全部提现</van-col>
-      </van-row>
-      <div class="postform">提现</div>
+      <div class="text">
+        <div class="text">当前可提现余额为{{withdraw}}元</div>
+        <div class="text2"
+             @click="allwithdraw()">全部提现</div>
+      </div>
+
+      <div class="postform"
+           @click="submit()">提现</div>
     </div>
 
   </div>
@@ -28,11 +27,13 @@
 
 <script>
 import { Button, Toast, Field, CellGroup, Cell, Col, Row } from 'vant'
+var url = require('./worker/url.js')
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      value1: ''
+      value1: '',
+      withdraw: ""
     }
   },
   mounted () {
@@ -40,53 +41,62 @@ export default {
     _that.run()
   },
   methods: {
-    changebank () {
-      this.$router.push({
-        path: '/bank-card'
-      })
-    },
+
     run () {
       var _that = this
       var urls = window.location.href.split('?')[0]
       var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
-      _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
-      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).muser.nick
+      var store_text = JSON.parse(sessionStorage.getItem('store_text'))
+      _that._data.withdraw = store_text.withdraw
+    },
+    allwithdraw () {
+      var _that = this;
+      _that._data.value1 = _that._data.withdraw
 
-      _that.$http
-        .get(_that.$api + '/wx/agent/get_by_unionid?unionid=' + unionid)
-        .then(rs => {
-          if (rs.data == null) {
-            Toast('您还不是代理请先注册代理')
-            _that.$router.push({
-              path: '/agent-agreement?type=agent'
-            })
-          } else {
-            if (rs.data.is_active == '0') {
-              Toast('您还不是代理请先注册代理')
-              sessionStorage.setItem('agentmessage', JSON.stringify(rs.data))
-              _that.$router.push({
-                path: '/agent-agreement?type=agent'
-              })
-            } else if (rs.data.is_active == '2') {
-              _that.$http
-                .post(_that.$api + '/wx/agent/get_his', {
-                  'unionid': unionid
-                })
-                .then(function (response) {
-                  _that._data.comm = response.data.comm
-                  _that._data.commlCaimed = response.data.commlCaimed
-                  _that._data.commPaid = response.data.commPaid
-                  _that._data.list = response.data.comm_his.awardByMonth
-                })
-                .catch(function (error) {
-                  console.log(error)
-                })
+    },
+    submit () {
+      var _that = this;
+      if (_that._data.value1 > _that._data.withdraw) {
+        Toast("输入的提现金额大于可提现金额")
+      } else if (_that._data.value1 == "") {
+        Toast("提现金额不能为空")
+      } else {
+        var store_id = JSON.parse(sessionStorage.getItem('store_text')).store_id
+        var open_id = JSON.parse(localStorage.getItem('userinfo')).muser.open_id
+        var bank_name = JSON.parse(localStorage.getItem('userinfo')).partnerInfo.bank_name
+        var account_number = JSON.parse(localStorage.getItem('userinfo')).partnerInfo.bank_account
+        var mobile = JSON.parse(localStorage.getItem('userinfo')).partnerInfo.phone
+        var realname = JSON.parse(localStorage.getItem('userinfo')).partnerInfo.bank_acc_name
+        _that.$http
+          .post(url + '/api/store/applyCashMoney', {
+            "access_key": "xunjiepf",
+            "openid": open_id,
+            "store_id": store_id,
+            "cash": Number(_that._data.value1),
+            "bank_name": bank_name,
+            "account_number": account_number,
+            "realname": realname,
+            "mobile": mobile
+          })
+          .then(rs => {
+            if (rs.data.errmsg) {
+              Toast(rs.data.errmsg)
+            } else {
+              if (rs.data == "1") {
+                Toast("提现申请成功")
+              } else {
+                Toast("网络错误")
+              }
             }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+
+
+
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
+
     },
     getQueryString (name) {
       var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
@@ -177,6 +187,19 @@ h3 {
   text-align: right;
   color: blue;
   line-height: 40px;
+}
+.text {
+  height: 60px;
+  width: 90%;
+  margin-left: 5%;
+}
+.text div:nth-of-type(1) {
+  float: left;
+  width: 50%;
+}
+.text div:nth-of-type(2) {
+  float: right;
+  width: 40%;
 }
 .cont {
   width: 100%;

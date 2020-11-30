@@ -1,9 +1,7 @@
 <template>
   <div class="box">
     <van-nav-bar title=""
-                 left-text="返回"
                  left-arrow
-                 @click-left="onClickLeft"
                  @click-right="onClickRight">
       <template #right>
         <van-icon name="setting-o"
@@ -15,20 +13,20 @@
       <div class="usertext">
         <img :src="headerimg"
              class="headerimg" />
-        <div class="header">{{nickname}}</div>
+        <div class="header">{{store_name}}</div>
       </div>
       <div class="detailed">
         <van-row>
-          <van-col span="12">账户余额：<span style="color:#72ee42">12323</span></van-col>
+          <van-col span="12">账户余额：<span style="color:#72ee42">{{balance}}</span></van-col>
+          <van-col span="12">总盈利：{{net_income}}</van-col>
 
-          <van-col span="12">可提现金额：232</van-col>
         </van-row>
       </div>
       <div class="detailed">
         <van-row>
-          <van-col span="12">本月订单数：100</van-col>
+          <van-col span="12">订单总数：{{order_num}}</van-col>
+          <van-col span="12">可提现金额：{{withdraw}}</van-col>
 
-          <van-col span="12">本月盈利：144450</van-col>
         </van-row>
       </div>
     </header>
@@ -36,7 +34,16 @@
       <van-cell title="申请提现"
                 is-link
                 class="cells"
-                to="withdrawal" />
+                @click="withdrawal()" />
+      <van-cell title="个人信息"
+                is-link
+                class="cells"
+                to="franchise-modify" />
+      <van-cell title="门店信息"
+                is-link
+                class="cells"
+                to="franchise-store" />
+
       <van-cell title="账单明细"
                 is-link
                 class="cells"
@@ -45,34 +52,36 @@
                 is-link
                 class="cells"
                 to="franchise-worker" />
+      <van-cell title="技师审批"
+                is-link
+                class="cells"
+                to="technician-audit" />
 
       <van-cell title="使用帮助"
                 is-link
                 class="cells"
                 to="help-text" />
+
     </section>
 
   </div>
 </template>
 
 <script>
+var url = require('../worker/url.js')
 import { Tab, Tabs, Col, Row, Button, Toast, NavBar, Icon, Cell, CellGroup } from 'vant'
 export default {
   name: 'HelloWorld',
   data () {
     return {
       onoff: false,
-      nickname: '上海市某某店',
+      store_name: '上海市某某店',
       headerimg: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599727586313&di=9c396094d10f0aa13306dd4eb9802ca6&imgtype=0&src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201408%2F30%2F20140830180834_XuWYJ.png',
-      sharenumber: '20',
-      comm: '',
-      commPaid: '',
-      commlCaimed: '',
-      list: [],
-      language: '',
-      fanslist: [],
-      fansnumber: "",
-
+      balance: "",
+      net_income: "",
+      order_num: "",
+      withdraw: "",
+      radio: '0',
     }
   },
   created () {
@@ -87,33 +96,23 @@ export default {
       var urls = window.location.href.split('?')[0]
       var unionid = JSON.parse(localStorage.getItem('userinfo')).muser.unionid
       _that._data.headerimg = JSON.parse(localStorage.getItem('userinfo')).muser.headimgurl
-      _that._data.nickname = JSON.parse(localStorage.getItem('userinfo')).muser.nick
 
+      var store_id = JSON.parse(sessionStorage.getItem('nowstore')).store_id;
+      _that._data.store_name = JSON.parse(sessionStorage.getItem('nowstore')).store_name
       _that.$http
-        .post(_that.$api + '/wx/agent/get_his', {
-          'unionid': unionid
+        .post(url + '/api/store/storeInfo', {
+          "access_key": "xunjiepf",
+          "store_id": store_id
         })
-        .then(function (response) {
-          _that._data.comm = response.data.comm.amount
-          _that._data.commlCaimed = response.data.comm.amount_claimed
-          _that._data.commPaid = response.data.comm.amount_paid
-          _that._data.list = response.data.comm_his.awardByMonth
+        .then(rs => {
+          sessionStorage.setItem('store_text', JSON.stringify(rs.data));
+          _that._data.balance = rs.data.balance
+          _that._data.net_income = rs.data.net_income
+          _that._data.order_num = rs.data.order_num;
+          _that._data.withdraw = rs.data.withdraw;
         })
-        .catch(function (error) {
-          console.log(error)
-        });
-      _that.$http
-        .post(_that.$api + '/wx/worker/fans', {
-          'unionid': unionid
-        })
-        .then(function (response) {
-          _that._data.fanslist = response.data.fan_member;
-          _that._data.fansnumber = response.data.fan_member.length;
-
-          console.log()
-        })
-        .catch(function (error) {
-          console.log(error)
+        .catch(err => {
+          console.log(err)
         })
     },
     onClickLeft () {
@@ -126,13 +125,18 @@ export default {
         path: '/franchise-list'
       })
     },
+    withdrawal () {
+      this.$router.push({
+        path: '/withdrawal'
+      })
+    },
     getQueryString (name) {
       var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
       var r = window.location.search.substr(1).match(reg)
       if (r != null) return unescape(r[2])
       return null
     },
-    
+
     withdrawal () {
       var _that = this
       _that.$router.push({
@@ -162,7 +166,7 @@ export default {
     'van-nav-bar': NavBar,
     'van-icon': Icon,
     'van-cell-group': CellGroup,
-    'van-cell': Cell
+    'van-cell': Cell,
 
   }
 }
